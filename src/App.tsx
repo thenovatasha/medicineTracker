@@ -1,19 +1,27 @@
+import React from "react";
+
 const App = () => {
-    async function onSearch() {
-        fetch("http://localhost:3000")
+    async function onSearch(e: React.FormEvent) {
+        e.preventDefault();
+        fetch("http://localhost:3000/newUser", {
+            method: "POST",
+            body: JSON.stringify({ name: "Nafisa", password: "HAHA" }),
+        })
             .then((response) => response.text())
             .then((data) => console.log(data));
         console.log("Click Click");
     }
     return (
-        <div>
+        <form onSubmit={onSearch}>
             <label htmlFor="search">
                 <input type="text" name="search" id="search" />
             </label>
-            <button onClick={onSearch} type="button">
-                Search
-            </button>
-        </div>
+
+            <label htmlFor="pass">
+                <input type="text" name="pass" id="pass" />
+            </label>
+            <button type="submit">Search</button>
+        </form>
     );
 };
 

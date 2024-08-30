@@ -11,8 +11,12 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 const App = () => {
     function onSearch() {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield fetch("http://localhost:3000");
-            console.log(result);
+            fetch("http://localhost:3000/newUser", {
+                method: "POST",
+                body: JSON.stringify({ name: "Nafisa", password: "HAHA" }),
+            })
+                .then((response) => response.text())
+                .then((data) => console.log(data));
             console.log("Click Click");
         });
     }
