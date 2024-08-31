@@ -6,16 +6,30 @@ const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
+
+type statusResponse = {
+    creationStatus: "success" | "failure";
+};
 app.get("/", (req: Request, res: Response) => {
-    res.send("Express + TS Server");
+    // in the future, check if user is authorized
+    res.send("User is authorized");
 });
-app.post("/newUser", (req: Request, res: Response) => {
+
+// create a new user
+app.post("/newuser", async (req: Request, res: Response) => {
     const { name, password } = req.body;
-    console.log("Name: ", name);
-    console.log("Password: ", password);
-    createUser({ name: name, password: password });
-    res.statusCode = 202;
-    res.end("GOT");
+    let responseObject: statusResponse;
+    try {
+        await createUser({ username: name, password: password });
+    } catch (e) {
+        responseObject = { creationStatus: "failure" };
+        res.statusCode = 200;
+        res.json(responseObject);
+    }
+    responseObject = { creationStatus: "success" };
+    res.statusCode;
+    res.json(responseObject);
 });
+
 app.listen(PORT);
 console.log(`server started at http://localhost:${PORT}`);

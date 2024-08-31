@@ -6,15 +6,13 @@ const App = () => {
     const [password, setPassword] = useState("");
     async function onSearch(e: React.FormEvent) {
         e.preventDefault();
-        fetch("http://localhost:3000/newUser", {
+        fetch("http://localhost:3000/newuser", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({ name: name, password: password }),
-        })
-            .then((response) => response.text())
-            .then((data) => console.log(data));
+        });
         console.log("Click Click");
     }
     async function onNameChange(e: ChangeEvent<HTMLInputElement>) {
