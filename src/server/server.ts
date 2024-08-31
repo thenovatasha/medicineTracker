@@ -1,38 +1,21 @@
 import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import "dotenv/config";
-import { createUser } from "../db/db";
+import { signupMiddleware } from "./signup";
+import loginMiddleware from "./signin";
+
+// Initialize server
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
 
+// set the initial middleware
 app.use(cors());
 app.use(express.json());
 
-type statusResponse = {
-  creationStatus: "success" | "failure";
-};
-app.get("/", (req: Request, res: Response) => {
-  // in the future, check if user is authorized
-  res.send("User is authorized");
-});
-
+app.get("/login", loginMiddleware);
 // create a new user
-app.post("/signup", async (req: Request, res: Response) => {
-  const { name, password } = req.body;
-  let responseObject: statusResponse;
-  // check if the user already exists
-  try {
-    await createUser({ username: name, password: password });
-  } catch (e) {
-    responseObject = { creationStatus: "failure" };
-    res.statusCode = 200;
-    res.json(responseObject);
-    return;
-  }
-  responseObject = { creationStatus: "success" };
-  res.statusCode = 200;
-  res.json(responseObject);
-});
+app.post("/signup", signupMiddleware);
 
+// activate the server
 app.listen(PORT);
 console.log(`server started at http://localhost:${PORT}`);
