@@ -8,9 +8,16 @@ Content-Type: application/json
 GET http://localhost:3001/login
 Content-Type: application/json
 
-{"name": "Keshf", "password": "zff"}
+{"name": "Keshf", "password": "fff"}
 ### 
 GET http://localhost:3001/login
 Content-Type: application/json
 
 {"name": "TORY", "password": "flta"}
+
+### 
+
+GET http://localhost:3001/dashboard/kesh
+Content-Type: application/json
+
+{ "token": "eyJhbGciOiJIUzI1NiIsInR5cCi6IkpXVCJ9.eyJ1c2VybmFtZSI6Iktlc2hmIiwiaWF0IjoxNzI1MjA3NjM3LCJleHAiOjE3MjUyMDgyMzd9.wGbzCX0xYDucIQQ5NCAnpcerXJ_9zrvxy_sMj1B8y1Y" }

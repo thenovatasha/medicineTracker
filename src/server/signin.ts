@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getDb, getPassword } from "../db/db";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export default async function loginMiddleware(req: Request, res: Response) {
   const db = await getDb("medTracker");
@@ -10,7 +11,12 @@ export default async function loginMiddleware(req: Request, res: Response) {
     // validate password
     var result = await bcrypt.compare(password, truePassword.password);
     if (result === true) {
-      res.send("SUCCESSFULLY SIGNED IN!");
+      // res.send("SUCCESSFULLY SIGNED IN!");
+      // create the jwt and return it back
+      const token = jwt.sign({ username: name }, "secret", {
+        expiresIn: "10m",
+      });
+      res.send(token);
     } else {
       res.send("NOT THE REAL DEAL");
     }
