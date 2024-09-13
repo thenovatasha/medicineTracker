@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUser } from "../db/db";
+import { createUser } from "../../db/db";
 
 interface StatusResponse {
   creationStatus: "success" | "failure";

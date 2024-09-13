@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getDb, getPassword } from "../db/db";
+import { getDb, getPassword } from "../../db/db";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -15,6 +15,9 @@ export default async function loginMiddleware(req: Request, res: Response) {
       // create the jwt and return it back
       const token = jwt.sign({ username: name }, "secret", {
         expiresIn: "10m",
+      });
+      const expiration = jwt.sign({ username: name }, "secret", {
+        expiresIn: "60m",
       });
       res.send(token);
     } else {
