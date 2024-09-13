@@ -1,14 +1,14 @@
 POST http://localhost:3001/signup
 Content-Type: application/json
 
-{"name": "Keshf", "password": "fff"}
+{"name": "kz", "password": "Ketu2"}
 
 ### 
 
 GET http://localhost:3001/login
 Content-Type: application/json
 
-{"name": "Keshf", "password": "fff"}
+{"name": "kz", "password": "Ketu2"}
 ### 
 GET http://localhost:3001/login
 Content-Type: application/json
@@ -17,7 +17,7 @@ Content-Type: application/json
 
 ### 
 
-GET http://localhost:3001/dashboard/kesh
+GET http://localhost:3001/dashboard/kz
 Content-Type: application/json
 
-{ "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Iktlc2hmIiwiaWF0IjoxNzI1OTA2NDk2LCJleHAiOjE3MjU5MDcwOTZ9.RHbuKhZO-OCDiPJoo1iG3a-RaK8C59aa2OWJFOtoZSE" }
+{ "token": "eyJhbGiOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imt6IiwiaWF0IjoxNzI2MjU0NDkyLCJleHAiOjE3MjYyNTUwOTJ9.r2azHITzRRF_-cdqm1s4TAgBucziHIwbMpRnrN4l1dA" }

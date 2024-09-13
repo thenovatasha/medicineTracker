@@ -1,21 +1,21 @@
 import { Request, Response } from "express";
-import { createUser } from "../../db/db";
-
+import { createUser } from "../../db/insert";
 interface StatusResponse {
-  creationStatus: "success" | "failure";
+	creationStatus: "success" | "failure";
 }
 
 export const signupMiddleware = async (req: Request, res: Response) => {
-  const { name, password } = req.body;
-  let responseObject: StatusResponse;
+	const { name, password } = req.body;
+	let responseObject: StatusResponse;
 
-  try {
-    await createUser({ username: name, password: password });
-    responseObject = { creationStatus: "success" };
-    res.status(200).json(responseObject);
-  } catch (e) {
-    responseObject = { creationStatus: "failure" };
-    res.status(202).json(responseObject);
-    return;
-  }
+	try {
+		await createUser({ username: name, password: password });
+		responseObject = { creationStatus: "success" };
+		res.status(200).json(responseObject);
+	} catch (e) {
+		console.log(e);
+		responseObject = { creationStatus: "failure" };
+		res.status(202).json(responseObject);
+		return;
+	}
 };
