@@ -1,14 +1,9 @@
-import { Collection, Db, MongoClient } from "mongodb";
+import { Db, MongoClient } from "mongodb";
 
 // the password functionality
-
 const url: string = "mongodb://localhost:27017";
 let client: MongoClient | null;
 
-export type User = {
-    username: string;
-	password: string;
-};
 
 // create a connection to the database if one doesn't already exist
 async function connectToDatabase() {
@@ -17,8 +12,12 @@ async function connectToDatabase() {
 	}
 }
 
-// return the database
-export async function getDb(dbName: string) {
+/**
+ * Returns a database connection, or creates one if one doesn't exist
+ * @param dbName the name of the database to get
+ * @returns Promise<Db>
+ */
+export async function getDb(dbName: string): Promise<Db> {
     if (!client) {
         await connectToDatabase();
     }
@@ -29,7 +28,3 @@ export async function getDb(dbName: string) {
     return client.db(dbName);
 }
 
-export async function getPassword(username: string, collection: Collection) {
-    const projection = { projection: { _id: 0, password: 1 } };
-    return collection.findOne({ username: username }, projection);
-}

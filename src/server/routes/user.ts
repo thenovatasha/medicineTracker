@@ -1,4 +1,3 @@
-import { error } from "console";
 import { Request, Response, NextFunction, Errback } from "express";
 import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 
@@ -25,6 +24,5 @@ export default async function getUserMedMiddleware(
 		console.log(typeof(decoded));
 		console.log("Proceeding from get user middleware");
 		next();
-	});
-	
+	});	
 }
