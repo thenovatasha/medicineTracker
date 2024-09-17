@@ -68,10 +68,18 @@ export async function createMedicine(username: string, medicine: Medicine) {
     if(!result) {
         return collection.insertOne({username: username, medicines: [medicine]})
 
-    } else {        
+    }
+    const medicineExists = collection.findOne({username: username,
+                                              "meds.name": medicine.name});
+    
+    if(!medicineExists) {
         return collection.updateOne({username: username},
                                     {$push: {medicines: medicine}})
-    }
+    } else {
+        throw new Error("Medicine exists");
+    }        
+        
+
 }
 
 export async function forgotDose(username: string, medicineName: string,

@@ -3,9 +3,6 @@ import cors from "cors";
 import "dotenv/config";
 import { signupMiddleware } from "./routes/signup";
 import loginMiddleware from "./routes/signin";
-import getUserMedMiddleware from "./routes/user";
-import { displayDashboard } from "./routes/displayDashboard";
-
 // Initialize server
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -14,12 +11,18 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.text());
-
+// implement a top level protection middleware
 app.get("/login", loginMiddleware);
 // create a new user
 app.post("/signup", signupMiddleware);
 
-app.get("/dashboard/:username", getUserMedMiddleware, displayDashboard);
+// beyond this point needs to be authenticated
+app.use(authenticateUser);
+app.get("/:username", getMeds);
+app.post("/:username", createMeds);
+app.put("/:username", updateMeds);
+
+
 // activate the server
 app.listen(PORT);
 console.log(`server started at http://localhost:${PORT}`);

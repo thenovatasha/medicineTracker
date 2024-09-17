@@ -16,9 +16,6 @@ export default async function loginMiddleware(req: Request, res: Response) {
 			const token = jwt.sign({ username: name }, "secret", {
 				expiresIn: "10m",
 			});
-			const expiration = jwt.sign({ username: name }, "secret", {
-				expiresIn: "60m",
-			});
 			res.send(token);
 		} else {
 			res.send("NOT THE REAL DEAL");
