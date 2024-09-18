@@ -8,15 +8,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { MongoClient } from "mongodb";
+// the password functionality
 const url = "mongodb://localhost:27017";
-const client = new MongoClient(url);
-const dbName = "medTracker";
-export function createUser(user) {
+let client;
+// create a connection to the database if one doesn't already exist
+function connectToDatabase() {
     return __awaiter(this, void 0, void 0, function* () {
-        yield client.connect();
-        const db = client.db(dbName);
-        const collection = db.collection("User");
-        yield collection.insertOne({ name: user.name, password: user.password });
-        return true;
+        if (!client) {
+            client = new MongoClient(url);
+        }
+    });
+}
+/**
+ * Returns a database connection, or creates one if one doesn't exist
+ * @param dbName the name of the database to get
+ * @returns Promise<Db>
+ */
+export function getDb(dbName) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!client) {
+            yield connectToDatabase();
+        }
+        // check if client still doesn't exist
+        if (!client) {
+            throw Error("DATABASE ERROR");
+        }
+        return client.db(dbName);
     });
 }

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { getDb, getPassword } from "../../db/db.js";
+import { getDb } from "../../db/db.js";
+import { getPassword } from "../../db/find.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 

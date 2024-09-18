@@ -1,5 +1,5 @@
 import { Collection } from "mongodb";
-import { User } from "../types/User";
+import { User } from "../types/User.js";
 
 /**
  * Get the password for the user in question

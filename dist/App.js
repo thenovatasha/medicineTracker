@@ -8,18 +8,33 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { useState } from "react";
 const App = () => {
-    function onSearch() {
+    const [name, setName] = useState("");
+    const [password, setPassword] = useState("");
+    function onSearch(e) {
         return __awaiter(this, void 0, void 0, function* () {
-            fetch("http://localhost:3000/newUser", {
+            e.preventDefault();
+            fetch("http://localhost:3000/signup", {
                 method: "POST",
-                body: JSON.stringify({ name: "Nafisa", password: "HAHA" }),
-            })
-                .then((response) => response.text())
-                .then((data) => console.log(data));
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ name: name, password: password }),
+            });
             console.log("Click Click");
         });
     }
-    return (_jsxs("div", { children: [_jsx("label", { htmlFor: "search", children: _jsx("input", { type: "text", name: "search", id: "search" }) }), _jsx("button", { onClick: onSearch, type: "button", children: "Search" })] }));
+    function onNameChange(e) {
+        return __awaiter(this, void 0, void 0, function* () {
+            setName(e.target.value);
+        });
+    }
+    function onPasswordChange(e) {
+        return __awaiter(this, void 0, void 0, function* () {
+            setPassword(e.target.value);
+        });
+    }
+    return (_jsxs("form", { children: [_jsx("label", { htmlFor: "search", children: _jsx("input", { onChange: onNameChange, type: "text", name: "search", id: "search" }) }), _jsx("label", { htmlFor: "pass", children: _jsx("input", { onChange: onPasswordChange, type: "text", name: "pass", id: "pass" }) }), _jsx("button", { onClick: onSearch, type: "button", children: "Search" })] }));
 };
 export default App;

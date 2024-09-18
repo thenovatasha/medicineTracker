@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUser } from "../../db/insert";
+import { createUser } from "../../db/insert.js";
 import jwt from "jsonwebtoken";
 interface StatusResponse {
 	creationStatus: "success" | "failure";
