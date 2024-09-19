@@ -13,7 +13,7 @@ enum ACCESS_STATE {
 
 export async function authorizeUser(req: Request, res: Response, next: NextFunction) {
     
-    let accessStatus: ACCESS_STATE;
+    let accessStatus: ACCESS_STATE = ACCESS_STATE.INVALID_ACCESS_TOKEN;
     const refreshToken = req.cookies.r_token;
     const accessToken = req.cookies.a_token;
     console.log("ACCESS TOKEN: ");
@@ -68,7 +68,8 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
         await setRefreshToken(refreshTokenDecoded.username, newRefreshToken);
         // for any handlers in the current cycle
         req.cookies.a_token = newAccessToken;
-        
+        // @ts-ignore
+        req.username = refreshTokenDecoded.username;
         // reset cookies for the browser
         res.cookie("a_token", newAccessToken);
         res.cookie("r_token", newRefreshToken);
@@ -76,5 +77,9 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
     }
     // check if refresh token was previously used
     console.log("access token valid");
+    if(accessStatus === ACCESS_STATE.VALID_ACCESS_TOKEN) {
+        // @ts-ignore
+        req.username = accessTokenDecoded.username;
+    }
     next();
 }

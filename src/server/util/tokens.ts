@@ -1,4 +1,4 @@
-import { Payload } from "../../types/Payload";
+import { Payload } from "../../types/Payload.js";
 import jwt from "jsonwebtoken";
 
 

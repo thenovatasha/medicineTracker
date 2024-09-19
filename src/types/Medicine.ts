@@ -1,11 +1,11 @@
 export interface Medicine {
     name: string,
-    width: Number,
-    height: Number,
-    startDate: Date,
+    width: number,
+    height: number,
+    startDate: number,
     startingDose: number
-    missed: Number,
-    dosages: Number[]
+    missed: number,
+    dosages: number[]
 }
 
 // db.meds.insertOne({user: Nova, meds: [{name: 'fexo', dosages: [2, 3, 2]}]});

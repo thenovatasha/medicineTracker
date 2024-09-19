@@ -1,6 +1,6 @@
 import { Collection } from "mongodb";
 import { User } from "../types/User.js";
-import { getUsersCollection } from "./db.js";
+import { getMedicineCollection, getUsersCollection } from "./db.js";
 /**
  * Get the password for the user in question
  * @param username 
@@ -37,4 +37,9 @@ export async function getRefreshToken(username: string) {
     const projection = {projection: { _id: 0, refreshToken: 1}};
     return await collection.findOne({username: username}, projection);
 
+}
+export async function getAllMeds(username: string) {
+    console.log("inside getall meds mongo");
+    const collection = await getMedicineCollection();
+    return collection.find({username: username});
 }

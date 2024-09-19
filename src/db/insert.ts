@@ -4,6 +4,7 @@ import { env } from "process";
 import { Medicine, UserHasMeds } from "../types/Medicine.js";
 import { User } from "../types/User.js";
 import { userExists } from "./find.js";
+
 /**
     Creates a user in the database, throws an Error if user already exists.
     Returns true if creation successful,
@@ -39,11 +40,12 @@ export async function createUser(user: User): Promise<boolean> {
 
 /**
     Create a medicine for the given user. Handle first-time insertion too.
+    Throws error if a medicine was already there with that name
  */
 export async function createMedicine(username: string, medicine: Medicine) {
 
     const db = await getDb();
-    const collection = db.collection<UserHasMeds>("UserMedicine");
+    const collection = db.collection<UserHasMeds>("medicine");
     const result = await collection.findOne({username: username}, 
                                             {projection: {medicines: 1}});
 
@@ -51,13 +53,15 @@ export async function createMedicine(username: string, medicine: Medicine) {
         return collection.insertOne({username: username, medicines: [medicine]})
 
     }
-    const medicineExists = collection.findOne({username: username,
-                                              "meds.name": medicine.name});
+    console.log(medicine.name);
+    const medicineExists = await collection.findOne({username: username,
+                                              "medicines.name": medicine.name});
+    console.log(medicineExists);
     if(!medicineExists) {
         return collection.updateOne({username: username},
                                     {$push: {medicines: medicine}})
     } else {
-        throw new Error("Medicine exists");
+        throw new Error("medicine exists");
     }
 }
 
@@ -66,7 +70,7 @@ export async function forgotDose(username: string, medicineName: string,
 {
     // db calls
     const db = await getDb();
-    const collection = db.collection<UserHasMeds>("UserMedicine");
+    const collection = db.collection<UserHasMeds>("medicine");
     
     // filter and update
     const filter = {username: username, "meds.name": medicineName};
@@ -83,7 +87,7 @@ export async function extraDose(username: string, medicineName: string,
 {
     // db calls
     const db = await getDb();
-    const collection = db.collection<UserHasMeds>("UserMedicine");
+    const collection = db.collection<UserHasMeds>("medicine");
 
     // filter and update
     const filter = {username: username, "meds.name": medicineName};

@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
-import { setRefreshToken } from "../../db/auth/tokenHandler";
-import { decodeAccessToken } from "../util/tokens";
+import { setRefreshToken } from "../../db/auth/tokenHandler.js";
+import { decodeAccessToken } from "../util/tokens.js";
+
+
 export async function logoutHandler(req: Request, res: Response) {
 
     // clear cookies from browser

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
-import { Payload } from "../../types/Payload";
+import { Payload } from "../../types/Payload.js";
 
 export default async function getUserMedMiddleware(
 	req: Request,
