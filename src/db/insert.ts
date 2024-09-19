@@ -4,22 +4,20 @@ import { env } from "process";
 import { Medicine, UserHasMeds } from "../types/Medicine.js";
 import { User } from "../types/User.js";
 import { userExists } from "./find.js";
+import { DB_NAME } from "./db.js";
 /**
     Creates a user in the database, throws an Error if user already exists.
     Returns true if creation successful,
     False otherwise
 */ 
 export async function createUser(user: User): Promise<boolean> {
-    if (!env.DB_NAME) {
-        console.error("DB_NAME WAS NOT FOUND");
-        return false;
-    }
+
     if (!env.SALT_ROUNDS) {
         console.error("SALT ROUND WAS NOT FOUND");
         return false;
     }
     // load in the db
-    const db = await getDb(env.DB_NAME);
+    const db = await getDb(DB_NAME);
     const users = db.collection<User>("user");
 
     // hash the password including the salt, and store it in the db
@@ -44,10 +42,8 @@ export async function createUser(user: User): Promise<boolean> {
     Create a medicine for the given user. Handle first-time insertion too.
  */
 export async function createMedicine(username: string, medicine: Medicine) {
-    if(!env.DB_NAME) {
-        return;
-    }
-    const db = await getDb(env.DB_NAME);
+
+    const db = await getDb(DB_NAME);
     const collection = db.collection<UserHasMeds>("UserMedicine");
     const result = await collection.findOne({username: username}, 
                                             {projection: {medicines: 1}});
@@ -58,15 +54,12 @@ export async function createMedicine(username: string, medicine: Medicine) {
     }
     const medicineExists = collection.findOne({username: username,
                                               "meds.name": medicine.name});
-    
     if(!medicineExists) {
         return collection.updateOne({username: username},
                                     {$push: {medicines: medicine}})
     } else {
         throw new Error("Medicine exists");
-    }        
-        
-
+    }
 }
 
 export async function forgotDose(username: string, medicineName: string,

@@ -4,15 +4,14 @@ import { getPassword, userExists } from "../../db/find.js";
 import bcrypt from "bcrypt";
 import { signAccessToken, signRefreshToken } from "../util/tokens.js";
 import { setRefreshToken } from "../../db/auth/tokenHandler.js";
+import { DB_NAME } from "../../db/db.js";
+import { assert } from "console";
 
 export default async function loginMiddleware(req: Request, res: Response) {
 	
 	console.log("LOGIN MIDDLEWARE");
-	const db_name = process.env.DB_NAME;
-	if(!db_name) {
-		return;
-	}
-	const db = await getDb(db_name);
+
+	const db = await getDb(DB_NAME);
 	
 	//! Sanitize input
 	// TODO: Think about whether you want this to be in body, or headers
@@ -23,17 +22,21 @@ export default async function loginMiddleware(req: Request, res: Response) {
 	}
 	// check if the user exists
 	const isCorrectUser = userExists(username);
-
+	if(!isCorrectUser) {
+		throw Error("INVALID USERNAME");
+	}
 	const truePassword = await getPassword(username, db.collection("user"));
-	if (!truePassword) {
-		res.json({STATUS: "username or password error"})
-		return;
+	//! SHOULD NEVER BE FALSE
+	assert(truePassword);
+	if(!truePassword) {
+		throw Error("USER SHOULD HAVE HAD A PASSWORD");
 	}
 	// validate password
 	const passwordIsValid = await bcrypt.compare(password, 
 												 truePassword.password);
+	
 	if(!passwordIsValid) {
-		res.json({STATUS: "NOT TODAY 2"})
+		res.json({STATUS: "Invalid Password"})
 		return;
 	}	
 	

@@ -9,14 +9,20 @@ export function logoutHandler(req: Request, res: Response) {
     if(typeof result == 'string') {
         return;
     }
+    logout(res, result.username);
+    // TODO: Check if this makes any difference
+    res.redirect("/login");
+    return;
+}
+
+/**
+ * Clears both cookies, and nullifies the refresh token
+ * @param res 
+ * @param username 
+ */
+export function logout(res: Response, username: string): void {
     res.clearCookie("a_token");
     res.clearCookie("r_token");
     // invalidate refresh token
-    setRefreshToken(result.username, null);
-
-
-    // TODO: Check if this makes any difference
-    req.body = {};
-    res.redirect("localhost:5173/");
-    return;
+    setRefreshToken(username, null);
 }

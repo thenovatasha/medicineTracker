@@ -1,12 +1,11 @@
-import express, { Express} from "express";
-import cors from "cors";
 import "dotenv/config";
+import cors from "cors";
+import express, { Express} from "express";
+import cookieParser from "cookie-parser";
 import { signupHandler } from "./routes/signup.js";
 import loginMiddleware from "./routes/login.js";
 import { logoutHandler } from "./routes/logout.js";
 import { authenticateUser } from "./routes/auth/authenticateUser.js";
-import cookieParser from "cookie-parser";
-import { METHODS } from "http";
 // Initialize server
 const app: Express = express();
 const PORT = process.env.PORT || 3000;

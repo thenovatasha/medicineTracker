@@ -4,6 +4,8 @@ import { User } from "../types/User";
 // the password functionality
 const url: string = "mongodb://localhost:27017";
 let client: MongoClient | null;
+export const DB_NAME: string = process.env.DB_NAME || "tracker";
+
 
 
 // create a connection to the database if one doesn't already exist
