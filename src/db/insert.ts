@@ -4,7 +4,6 @@ import { env } from "process";
 import { Medicine, UserHasMeds } from "../types/Medicine.js";
 import { User } from "../types/User.js";
 import { userExists } from "./find.js";
-import { DB_NAME } from "./db.js";
 /**
     Creates a user in the database, throws an Error if user already exists.
     Returns true if creation successful,
@@ -17,7 +16,7 @@ export async function createUser(user: User): Promise<boolean> {
         return false;
     }
     // load in the db
-    const db = await getDb(DB_NAME);
+    const db = await getDb();
     const users = db.collection<User>("user");
 
     // hash the password including the salt, and store it in the db
@@ -43,7 +42,7 @@ export async function createUser(user: User): Promise<boolean> {
  */
 export async function createMedicine(username: string, medicine: Medicine) {
 
-    const db = await getDb(DB_NAME);
+    const db = await getDb();
     const collection = db.collection<UserHasMeds>("UserMedicine");
     const result = await collection.findOne({username: username}, 
                                             {projection: {medicines: 1}});
@@ -65,11 +64,8 @@ export async function createMedicine(username: string, medicine: Medicine) {
 export async function forgotDose(username: string, medicineName: string,
                                  dose: number) 
 {
-    if(!env.DB_NAME) {
-        return;
-    }
     // db calls
-    const db = await getDb(env.DB_NAME);
+    const db = await getDb();
     const collection = db.collection<UserHasMeds>("UserMedicine");
     
     // filter and update
@@ -85,11 +81,8 @@ export async function forgotDose(username: string, medicineName: string,
 export async function extraDose(username: string, medicineName: string, 
                                 dose: number)
 {
-    if(!env.DB_NAME) {
-        return;
-    }
     // db calls
-    const db = await getDb(env.DB_NAME);
+    const db = await getDb();
     const collection = db.collection<UserHasMeds>("UserMedicine");
 
     // filter and update

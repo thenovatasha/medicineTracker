@@ -1,18 +1,19 @@
 import { Request, Response } from "express";
 import { setRefreshToken } from "../../db/auth/tokenHandler";
 import { decodeAccessToken } from "../util/tokens";
-export function logoutHandler(req: Request, res: Response) {
+export async function logoutHandler(req: Request, res: Response) {
 
     // clear cookies from browser
-    console.log(req.cookies);
+    console.log("INSIDE LOGOUT HANDLER");
+    console.log(req.cookies.a_token);
     const result = decodeAccessToken(req.cookies.a_token);
     if(typeof result == 'string') {
         return;
     }
-    logout(res, result.username);
-    // TODO: Check if this makes any difference
-    res.redirect("/login");
-    return;
+    await logout(res, result.username);
+    // TODO: Check if body is correct
+    //res.redirect("/login");
+    return res.status(200).json({status: "logged out"});
 }
 
 /**
@@ -20,9 +21,10 @@ export function logoutHandler(req: Request, res: Response) {
  * @param res 
  * @param username 
  */
-export function logout(res: Response, username: string): void {
+export async function logout(res: Response, username: string) {
     res.clearCookie("a_token");
     res.clearCookie("r_token");
     // invalidate refresh token
+    console.log("nullifying token for" + username);
     setRefreshToken(username, null);
 }

@@ -1,12 +1,9 @@
 import { Db, MongoClient, Collection } from "mongodb";
 import { User } from "../types/User";
-
 // the password functionality
 const url: string = "mongodb://localhost:27017";
 let client: MongoClient | null;
-export const DB_NAME: string = process.env.DB_NAME || "tracker";
-
-
+const DB_NAME: string = process.env.DB_NAME || "err";
 
 // create a connection to the database if one doesn't already exist
 async function connectToDatabase() {
@@ -20,7 +17,7 @@ async function connectToDatabase() {
  * @param dbName the name of the database to get
  * @returns Promise<Db>
  */
-export async function getDb(dbName: string): Promise<Db> {
+export async function getDb(): Promise<Db> {
     if (!client) {
         await connectToDatabase();
     }
@@ -28,15 +25,12 @@ export async function getDb(dbName: string): Promise<Db> {
     if (!client) {
         throw Error("DATABASE ERROR");
     }
-    return client.db(dbName);
+    return client.db(DB_NAME);
 }
 
 export async function getUsersCollection(): Promise<Collection<User>> {
-    const db_name = process.env.DB_NAME;
-    if(!db_name) {
-        throw Error("db does not exist");
-    }
-    const db = await getDb(db_name);
+    
+    const db = await getDb();
     return db.collection<User>("user")
 }
 

@@ -5,7 +5,8 @@ import cookieParser from "cookie-parser";
 import { signupHandler } from "./routes/signup.js";
 import loginMiddleware from "./routes/login.js";
 import { logoutHandler } from "./routes/logout.js";
-import { authenticateUser } from "./routes/auth/authenticateUser.js";
+import { authorizeUser } from "./routes/auth/authenticateUser.js";
+import { sendMedInfo } from "./util/med.js";
 // Initialize server
 const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -23,8 +24,8 @@ app.use(cookieParser());
 // create a new user
 app.post("/signup", signupHandler);
 app.post("/login", loginMiddleware);
-app.get("/med", authenticateUser);
-app.post("/logout", logoutHandler);
+app.get("/meds", authorizeUser, sendMedInfo);
+app.post("/logout", authorizeUser, logoutHandler);
 // beyond this point needs to be authenticated
 
 // activate the server

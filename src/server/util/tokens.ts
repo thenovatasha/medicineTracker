@@ -25,34 +25,37 @@ export function signAccessToken(payload: Payload): string {
     if(!secret) {
         throw new ConfigError("JWT_ACCESS_KEY missing");
     }
-    return jwt.sign(payload, secret, { expiresIn: "5m" });
+    // TODO: SET BACK TO 5m
+    return jwt.sign(payload, secret, { expiresIn: "30s" });
 }
 
-
+/**
+ * Throws Error if token is invalid, empty token if refresh key was not found
+ * @param refreshToken 
+ * @returns Payload
+ */
 export function decodeRefreshToken(refreshToken: string): Payload | string {
     const secret = process.env.JWT_REFRESH_KEY;
     if (!secret) {
         return "";
     }
-    try {
-        const verifiedToken = jwt.verify(refreshToken, secret);
-        return verifiedToken as Payload;
-    } catch(e) {
-        return "no refresh found"
-    }
+    const verifiedToken = jwt.verify(refreshToken, secret);
+    return verifiedToken as Payload;
 }
 
+/**
+ * Throws Error if token is invalid, empty token if refresh key was not found
+ * @param refreshToken 
+ * @returns Payload
+ */
 export function decodeAccessToken(accessToken: string): Payload | string {
     const secret = process.env.JWT_ACCESS_KEY;
     if (!secret) {
         return "";
     }
-    try {
-        const verifiedToken = jwt.verify(accessToken, secret);
-        return verifiedToken as Payload;
-    } catch(e) {
-        return "No access token found"
-    }
+
+    const verifiedToken = jwt.verify(accessToken, secret);
+    return verifiedToken as Payload;
 }
 
 

@@ -2,9 +2,6 @@
 import { getDb } from "../db";
 import { User } from "../../types/User";
 import { userExists } from "../find";
-import bcrypt from "bcrypt";
-
-
 
 export async function setRefreshToken(username: string,
                                       refreshToken: string | null) {
@@ -13,7 +10,7 @@ export async function setRefreshToken(username: string,
         return null;
     }
     console.log(username);
-    const db = await getDb(db_name);
+    const db = await getDb();
     const users = db.collection<User>("user");
     // insert into the users table, where the refreshToken belongs
     if (!await userExists(username, users)) {

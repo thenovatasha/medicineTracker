@@ -4,14 +4,13 @@ import { getPassword, userExists } from "../../db/find.js";
 import bcrypt from "bcrypt";
 import { signAccessToken, signRefreshToken } from "../util/tokens.js";
 import { setRefreshToken } from "../../db/auth/tokenHandler.js";
-import { DB_NAME } from "../../db/db.js";
 import { assert } from "console";
 
 export default async function loginMiddleware(req: Request, res: Response) {
 	
 	console.log("LOGIN MIDDLEWARE");
 
-	const db = await getDb(DB_NAME);
+	const db = await getDb();
 	
 	//! Sanitize input
 	// TODO: Think about whether you want this to be in body, or headers
