@@ -1,19 +1,22 @@
 POST http://localhost:3001/signup
 Content-Type: application/json
 
-{"name": "kz", "password": "Ketu2"}
+{"username": "nafi", "password": "1234"}
 
 ### 
 
-GET http://localhost:3001/login
+POST http://localhost:3001/login
 Content-Type: application/json
 
-{"name": "kz", "password": "Ketu2"}
+{"username": "kz", "password": "Ketu2"}
+
+
 ### 
-GET http://localhost:3001/login
+
+POST http://localhost:3001/logout
 Content-Type: application/json
 
-{"name": "TORY", "password": "flta"}
+{"username": "kz", "password": ""}
 
 ### 
 

@@ -1,4 +1,5 @@
-import { Db, MongoClient } from "mongodb";
+import { Db, MongoClient, Collection } from "mongodb";
+import { User } from "../types/User";
 
 // the password functionality
 const url: string = "mongodb://localhost:27017";
@@ -26,5 +27,14 @@ export async function getDb(dbName: string): Promise<Db> {
         throw Error("DATABASE ERROR");
     }
     return client.db(dbName);
+}
+
+export async function getUsersCollection(): Promise<Collection<User>> {
+    const db_name = process.env.DB_NAME;
+    if(!db_name) {
+        throw Error("db does not exist");
+    }
+    const db = await getDb(db_name);
+    return db.collection<User>("user")
 }
 

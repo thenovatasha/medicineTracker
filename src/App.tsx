@@ -1,39 +1,22 @@
-import React, { ChangeEvent } from "react";
-import { useState } from "react";
+import React, { useState } from 'react';
+import Login from './Login';
+import Logout from './Logout';
 
-const App = () => {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  async function onSearch(e: React.FormEvent) {
-    e.preventDefault();
-    fetch("http://localhost:3000/signup", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name: name, password: password }),
-    });
-    console.log("Click Click");
-  }
-  async function onNameChange(e: ChangeEvent<HTMLInputElement>) {
-    setName(e.target.value);
-  }
-  async function onPasswordChange(e: ChangeEvent<HTMLInputElement>) {
-    setPassword(e.target.value);
-  }
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
-    <form>
-      <label htmlFor="search">
-        <input onChange={onNameChange} type="text" name="search" id="search" />
-      </label>
-      <label htmlFor="pass">
-        <input onChange={onPasswordChange} type="text" name="pass" id="pass" />
-      </label>
-      <button onClick={onSearch} type="button">
-        Search
+    <div className="App">
+      {!isLoggedIn ? (
+        <Login />
+      ) : (
+        <Logout />
+      )}
+      <button onClick={() => setIsLoggedIn(!isLoggedIn)}>
+        {isLoggedIn ? 'Go to Login' : 'Go to Logout'}
       </button>
-    </form>
+    </div>
   );
-};
+}
 
 export default App;

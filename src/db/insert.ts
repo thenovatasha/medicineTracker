@@ -1,10 +1,9 @@
 import bcrypt from "bcrypt";
 import { getDb } from "./db.js";
 import { env } from "process";
-import { Collection } from "mongodb";
 import { Medicine, UserHasMeds } from "../types/Medicine.js";
 import { User } from "../types/User.js";
-
+import { userExists } from "./find.js";
 /**
     Creates a user in the database, throws an Error if user already exists.
     Returns true if creation successful,
@@ -21,7 +20,7 @@ export async function createUser(user: User): Promise<boolean> {
     }
     // load in the db
     const db = await getDb(env.DB_NAME);
-    const users = db.collection<User>("User");
+    const users = db.collection<User>("user");
 
     // hash the password including the salt, and store it in the db
     if (await userExists(user.username, users)) {
@@ -39,19 +38,7 @@ export async function createUser(user: User): Promise<boolean> {
     return true;
 }
 
-/**
-    Create a medicine for the given user. Handle first-time insertion too.
- */
-async function userExists(username: string, collection: Collection<User>): 
-    Promise<boolean> {
 
-    // query the database to see if the user exits
-    if (await collection.findOne({ username: username })) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 /**
     Create a medicine for the given user. Handle first-time insertion too.

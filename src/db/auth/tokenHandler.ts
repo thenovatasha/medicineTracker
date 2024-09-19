@@ -1,27 +1,25 @@
-import jwt, {JwtPayload } from 'jsonwebtoken';
-import "dotenv/config";
+
+import { getDb } from "../db";
+import { User } from "../../types/User";
+import { userExists } from "../find";
+import bcrypt from "bcrypt";
 
 
-export function decodeRefreshToken(refreshToken: string): JwtPayload | string {
-    const secret = process.env.RTSALT;
-    if (!secret) {
-        return "";
+
+export async function setRefreshToken(username: string,
+                                      refreshToken: string | null) {
+    const db_name = process.env.DB_NAME;    
+    if(!db_name) {
+        return null;
     }
-    try {
-        const verifiedToken = jwt.verify(refreshToken, secret);
-        return verifiedToken;
-    } catch(e) {
-        console.log("REFRESH NOT VALID");
+    console.log(username);
+    const db = await getDb(db_name);
+    const users = db.collection<User>("user");
+    // insert into the users table, where the refreshToken belongs
+    if (!await userExists(username, users)) {
+        throw Error("TOKEN HANDLER: user doesn't exist after signup");
+    } else {
+        return users.updateOne({username: username},
+                        {$set: {refreshToken: refreshToken}})
     }
-    return "";
 }
-
-export function generateRefreshToken(data: object): string | undefined {
-    const secret = process.env.RTSALT;
-    if (!secret) {
-        console.log("Secret not found");
-        return;
-    }
-    return jwt.sign(data, secret, { expiresIn: "2m" });
-}
-

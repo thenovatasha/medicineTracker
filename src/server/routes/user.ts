@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
-import { DecodedToken } from "../../types/DecodedToken";
+import { Payload } from "../../types/Payload";
+
 export default async function getUserMedMiddleware(
 	req: Request,
 	res: Response,
@@ -15,8 +16,9 @@ export default async function getUserMedMiddleware(
 		if (err) {
 			return res.status(401).json({ error: "Invalid token" });
 		}
+		// access verified, pass request with the username
 		if(decoded && typeof decoded !== "string") {
-			const decodedToken = decoded as DecodedToken;
+			const decodedToken = decoded as Payload;
 			req.body.user = decodedToken.username;
 		}
 		console.log("Proceeding from get user middleware");

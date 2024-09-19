@@ -1,12 +1,10 @@
 import express, { Express} from "express";
 import cors from "cors";
 import "dotenv/config";
-import { signupMiddleware } from "./routes/signup.js";
-import loginMiddleware from "./routes/signin.js";
-
+import { signupHandler } from "./routes/signup.js";
+import loginMiddleware from "./routes/login.js";
+import { logoutHandler } from "./routes/logout.js";
 import { authenticateUser } from "./routes/auth/authenticateUser.js";
-import { generateRefreshToken } from "../db/auth/tokenHandler.js";
-import { decodeRefreshToken } from "../db/auth/tokenHandler.js";
 import cookieParser from "cookie-parser";
 import { METHODS } from "http";
 // Initialize server
@@ -15,23 +13,20 @@ const PORT = process.env.PORT || 3000;
 
 // set the initial middleware
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: "http://localhost:5173",
     credentials: true,
 }));
 app.use(express.json());
 app.use(express.text());
 app.use(cookieParser());
-// implement a top level protection middleware
-app.get("/login", loginMiddleware);
-// create a new user
-app.post("/signup", signupMiddleware);
-app.get("/med", authenticateUser);
-// beyond this point needs to be authenticated
-// app.use(authenticateUser);
-// app.get("/:username", getMeds);
-// app.post("/:username", createMeds);
-// app.put("/:username", updateMeds);
 
+// implement a top level protection middleware
+// create a new user
+app.post("/signup", signupHandler);
+app.post("/login", loginMiddleware);
+app.get("/med", authenticateUser);
+app.post("/logout", logoutHandler);
+// beyond this point needs to be authenticated
 
 // activate the server
 app.listen(PORT);
