@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { createUser } from "../../db/insert.js";
-import { StatusResponse } from "../../types/ResponseStatus.js";
-import { signRefreshToken } from "../util/tokens.js";
+import { createUser } from "../../db/insert";
+import { StatusResponse } from "../../types/ResponseStatus";
+import { signRefreshToken } from "../util/tokens";
 
 export const signupHandler = async (req: Request, res: Response) => {
 

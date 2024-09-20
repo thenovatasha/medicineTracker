@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "compile": "npx tsc",
+    "test": "jest",
     "dev": "vite",
     "start": "npx tsx src/server/server.ts",
     "production": "npx tsc && node ./dist/server/server.js"
@@ -31,6 +32,7 @@
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.13",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^22.5.5",
     "@types/react": "^18.3.3",
@@ -41,6 +43,8 @@
     "eslint": "^9.8.0",
     "eslint-plugin-react": "^7.35.0",
     "globals": "^15.9.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
     "typescript": "^5.6.2",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.0"

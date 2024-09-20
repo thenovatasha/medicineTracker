@@ -1,6 +1,6 @@
 import { Collection } from "mongodb";
-import { User } from "../types/User.js";
-import { getMedicineCollection, getUsersCollection } from "./db.js";
+import { User } from "../types/User";
+import { getMedicineCollection, getUsersCollection } from "./db";
 /**
  * Get the password for the user in question
  * @param username 

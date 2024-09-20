@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
-import { getDb } from "./db.js";
+import { getDb } from "./db";
 import { env } from "process";
-import { Medicine, UserHasMeds } from "../types/Medicine.js";
-import { User } from "../types/User.js";
-import { userExists } from "./find.js";
+import { Medicine, UserHasMeds } from "../types/Medicine";
+import { User } from "../types/User";
+import { userExists } from "./find";
 
 /**
     Creates a user in the database, throws an Error if user already exists.
