@@ -1,5 +1,5 @@
 // src/Login.js
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -7,7 +7,7 @@ function Login() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
 
     // Create the payload for the login request

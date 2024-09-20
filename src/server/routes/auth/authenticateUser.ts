@@ -4,6 +4,8 @@ import { getRefreshToken } from "../../../db/find";
 import { Payload } from "../../../types/Payload";
 import { assert } from "console";
 import { setRefreshToken } from "../../../db/auth/tokenHandler";
+
+
 enum ACCESS_STATE {
     INVALID_ACCESS_TOKEN,
     VALID_ACCESS_TOKEN,
@@ -15,11 +17,7 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
     
     let accessStatus: ACCESS_STATE = ACCESS_STATE.INVALID_ACCESS_TOKEN;
     const refreshToken = req.cookies.r_token;
-    const accessToken = req.cookies.a_token;
-    console.log("ACCESS TOKEN: ");
-    console.log(accessToken);
-    console.log("REFRESH TOKEN: ");
-    console.log(refreshToken);
+
     // check for valid tokens
     let accessTokenDecoded;
     try {
@@ -31,12 +29,10 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
     } catch(e) {
         accessStatus = ACCESS_STATE.INVALID_ACCESS_TOKEN;
     }
-    console.log("ACCESS STATUS IS: ")
-    console.log(accessStatus);
+
     if(accessStatus === ACCESS_STATE.INVALID_ACCESS_TOKEN) {
         // check for validity of refresh token
         let refreshTokenDecoded: Payload | string;
-
         try {
             refreshTokenDecoded = decodeRefreshToken(req.cookies.r_token);        
             if(typeof refreshTokenDecoded === "string") {
@@ -47,7 +43,7 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
             accessStatus = ACCESS_STATE.INVALID_REFRESH_TOKEN;
             return res.status(500).json({detail: "INVALID REFRESH TOKEN"});
         }
-    
+
         assert(accessStatus === ACCESS_STATE.VALID_REFRESH_TOKEN);
         const db_result = await getRefreshToken(refreshTokenDecoded.username);
         if(!db_result) {
@@ -66,17 +62,17 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
         const newAccessToken = signAccessToken({username: refreshTokenDecoded.username});
         const newRefreshToken = signRefreshToken({username: refreshTokenDecoded.username});
         await setRefreshToken(refreshTokenDecoded.username, newRefreshToken);
+        
         // for any handlers in the current cycle
-        req.cookies.a_token = newAccessToken;
+        req.cookies.a_token = newAccessToken; 
         // @ts-ignore
         req.username = refreshTokenDecoded.username;
         // reset cookies for the browser
         res.cookie("a_token", newAccessToken);
         res.cookie("r_token", newRefreshToken);
-        console.log("new rt-at pair set");
     }
+
     // check if refresh token was previously used
-    console.log("access token valid");
     if(accessStatus === ACCESS_STATE.VALID_ACCESS_TOKEN) {
         // @ts-ignore
         req.username = accessTokenDecoded.username;

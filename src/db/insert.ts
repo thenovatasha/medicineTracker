@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { getDb } from "./db";
+import { getDb, getMedicineCollection } from "./db";
 import { env } from "process";
 import { Medicine, UserHasMeds } from "../types/Medicine";
 import { User } from "../types/User";
@@ -97,4 +97,11 @@ export async function extraDose(username: string, medicineName: string,
         }
     }
     return collection.updateOne(filter, updateDocument);
+}
+
+export async function updateMedicinesList(username: string, medicineList: Medicine[]) {
+    
+    const collection = await getMedicineCollection();
+    return collection.updateOne({username: username},
+                                    {$set: {medicines: medicineList}})
 }

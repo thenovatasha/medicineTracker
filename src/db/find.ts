@@ -39,7 +39,7 @@ export async function getRefreshToken(username: string) {
 
 }
 export async function getAllMeds(username: string) {
-    console.log("inside getall meds mongo");
+
     const collection = await getMedicineCollection();
     return collection.find({username: username});
 }

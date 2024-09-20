@@ -20,4 +20,3 @@ export async function setRefreshToken(username: string,
                         {$set: {refreshToken: refreshToken}})
     }
 }
-
