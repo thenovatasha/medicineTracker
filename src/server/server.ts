@@ -2,10 +2,10 @@ import "dotenv/config";
 import cors from "cors";
 import express, { Express} from "express";
 import cookieParser from "cookie-parser";
-import { signupHandler } from "./routes/signup.js";
-import loginMiddleware from "./routes/auth/login.js";
-import { router } from "./routes/protected.js";
+import { apiRouter } from "./routes/protectedRoute.js";
 import helmet from "helmet";
+import { onBoardRouter } from "./routes/onboardRoute.js";
+
 // Initialize server
 export const app: Express = express();
 const PORT = process.env.PORT || 3000;
@@ -18,18 +18,15 @@ app.use(cors({
     credentials: true,
 }));
 
-
 app.use(express.json());
 app.use(express.text());
 app.use(cookieParser());
 
 // implement a top level protection middleware
-app.use('/api', router);
-// create a new user
-app.post("/signup", signupHandler);
-app.post("/login", loginMiddleware);
+app.use("/api", apiRouter);
+app.use("/", onBoardRouter);
 
-// app.use(errHandler) 
+// app.use(errHandler)
 
 // activate the server
 app.listen(PORT);

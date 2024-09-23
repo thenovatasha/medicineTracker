@@ -8,33 +8,26 @@ import { TokenPair } from "../../../types/Payload.js";
  
 export default async function  loginMiddleware(req: Request, res: Response) {
 	
-	//! Sanitize input
-	// TODO: Think about whether you want this to be in body, or headers
 	const { username, password } = req.body;
 
-	if(!username) {
-		throw Error("Username missing");
-	}
 	// check if the user exists
 	const isCorrectUser = await userExists(username);
 	if(!isCorrectUser) {
 		throw Error("INVALID USERNAME");
 	}
-	
 	const isPasswordValid = await matchPassword(username, password);
+	
 	if(!isPasswordValid) {
-		res.json({STATUS: "Invalid Password"})
-		return; 
+		return res.json({STATUS: "Invalid Password"});	 
 	}	
 	const {a_token, r_token} = generateTokenPair(username);
 
 	// TODO: change back to secure: true in production
 	res.cookie("a_token", a_token, {httpOnly: true, secure: false});
 	res.cookie("r_token", r_token, {httpOnly: true, secure: false});
-	// TODO: Change
 	
-	res.status(200).json({status: "cookies set"});
-	return;
+	// TODO: Change
+	return res.status(200).json({status: "cookies set"});
 }
 
 async function matchPassword(username: string, password: string) {
@@ -42,13 +35,17 @@ async function matchPassword(username: string, password: string) {
 	const truePasswordResult = await getPassword(username);
 	assert(truePasswordResult?.password);
 	if(!truePasswordResult?.password) {
-		return false;
+		return Promise.resolve(false);
 	}
 	// validate password
 	return await bcrypt.compare(password, truePasswordResult.password);
-
 }
 
+/**
+ * Generates a rt-at pair, and also updates it in the database
+ * @param username 
+ * @returns 
+ */
 function generateTokenPair(username: string): TokenPair {
 	
 	// create accessToken - refresh token pair

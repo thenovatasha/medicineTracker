@@ -35,6 +35,7 @@ export function queryChecker([...params]: string[]) {
  * @returns array of middlewares for express to go through
  */
 export function bodyChecker(middleware: string) {
+    // for creating a new medicine
     if(middleware === 'newMedHandler') {
         return [
             body('name').trim().notEmpty().isString(),
@@ -43,10 +44,19 @@ export function bodyChecker(middleware: string) {
             resultValidator
         ];
     }
+    // for updating the medicine
     else if(middleware === 'updateMedHandler') {
         return [
             body(['medicine', 'type']).trim().notEmpty().isString(),
             body('amount').notEmpty().isNumeric(),
+            resultValidator
+        ];
+    // for login and signup
+    } else if(middleware === "onBoardHandler") {
+        return [
+            body(["username", "password"]).trim().notEmpty().isString(),
+            body("username").isLength({min: 2, max: 50}),
+            body("password").isLength({min: 6}),
             resultValidator
         ];
     } else {
