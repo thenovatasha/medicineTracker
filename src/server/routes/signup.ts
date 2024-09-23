@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { createUser } from "../../db/insert";
 import { StatusResponse } from "../../types/ResponseStatus";
-import { signRefreshToken } from "../util/tokens";
 
 export const signupHandler = async (req: Request, res: Response) => {
 
@@ -11,11 +10,10 @@ export const signupHandler = async (req: Request, res: Response) => {
 
 	try {
 		// Todo: Improve the response object api
-		const dateJoined = Date.now();
+		const dateJoined = Date.now(); 
 		// refresh token using a rotating mechanism (implemented elsewhere)
-		const refreshToken = signRefreshToken({username: username});
 		
-		await createUser({ username, password, dateJoined, refreshToken });
+		await createUser({ username, password, dateJoined, refreshToken: null});
 		responseObject = { creationStatus: "success" };
 		res.status(200).json(responseObject);
 	} catch (e) {

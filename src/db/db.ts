@@ -3,7 +3,6 @@ import { User } from "../types/User";
 import { UserHasMeds } from "../types/Medicine";
 
 
-// the password functionality
 const url: string = "mongodb://localhost:27017";
 let client: MongoClient | null;
 const DB_NAME: string = process.env.DB_NAME || "err";
@@ -38,7 +37,7 @@ export async function getDb(): Promise<Db> {
 export async function getUsersCollection(): Promise<Collection<User>> {
     
     const db = await getDb();
-    return db.collection<User>("user")
+    return db.collection<User>("user");
 }
 
 /**

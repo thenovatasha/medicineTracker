@@ -78,5 +78,5 @@ export async function updateMedHandler(req: Request, res: Response) {
     forgotDose(username, medicineName, amount);
     
     // TODO: Later implementation
-    // rename 
+    // rename medicine
 }

@@ -1,53 +1,60 @@
 import { Request, Response } from "express";
-import { getDb } from "../../db/db.js";
-import { getPassword, userExists } from "../../db/find.js";
+import { getPassword, userExists } from "../../../db/find.js";
 import bcrypt from "bcrypt";
-import { signAccessToken, signRefreshToken } from "../util/tokens.js";
-import { setRefreshToken } from "../../db/auth/tokenHandler.js";
+import { signAccessToken, signRefreshToken } from "../../util/tokens.js";
+import { setRefreshToken } from "../../../db/auth/tokenHandler.js";
 import { assert } from "console";
-
-export default async function loginMiddleware(req: Request, res: Response) {
-	
-	console.log("LOGIN MIDDLEWARE");
-
-	const db = await getDb();
+import { TokenPair } from "../../../types/Payload.js";
+ 
+export default async function  loginMiddleware(req: Request, res: Response) {
 	
 	//! Sanitize input
 	// TODO: Think about whether you want this to be in body, or headers
 	const { username, password } = req.body;
-	console.log(username, password);
+
 	if(!username) {
 		throw Error("Username missing");
 	}
 	// check if the user exists
-	const isCorrectUser = userExists(username);
+	const isCorrectUser = await userExists(username);
 	if(!isCorrectUser) {
 		throw Error("INVALID USERNAME");
 	}
-	const truePassword = await getPassword(username, db.collection("user"));
-	//! SHOULD NEVER BE FALSE
-	assert(truePassword);
-	if(!truePassword) {
-		throw Error("USER SHOULD HAVE HAD A PASSWORD");
+	
+	const isPasswordValid = await matchPassword(username, password);
+	if(!isPasswordValid) {
+		res.json({STATUS: "Invalid Password"})
+		return; 
+	}	
+	const {a_token, r_token} = generateTokenPair(username);
+
+	// TODO: change back to secure: true in production
+	res.cookie("a_token", a_token, {httpOnly: true, secure: false});
+	res.cookie("r_token", r_token, {httpOnly: true, secure: false});
+	// TODO: Change
+	res.json({status: "cookies set"});
+	return;
+}
+
+async function matchPassword(username: string, password: string) {
+	// * SHOULD NEVER BE FALSE
+	const truePasswordResult = await getPassword(username);
+	assert(truePasswordResult?.password);
+	if(!truePasswordResult?.password) {
+		return false;
 	}
 	// validate password
-	const passwordIsValid = await bcrypt.compare(password, 
-												 truePassword.password);
-	
-	if(!passwordIsValid) {
-		res.json({STATUS: "Invalid Password"})
-		return;
-	}	
+	return await bcrypt.compare(password, truePasswordResult.password);
+
+}
+
+function generateTokenPair(username: string): TokenPair {
 	
 	// create accessToken - refresh token pair
 	const accessToken = signAccessToken({username});
 	const refreshToken = signRefreshToken({username});
 	// ignore response, having token set with certain guarantee is not mandatory
 	setRefreshToken(username, refreshToken);
-	//! TODO: change back to secure: true in production
-	res.cookie("a_token", accessToken, {httpOnly: true, secure: false});
-	res.cookie("r_token", refreshToken, {httpOnly: true, secure: false});
-	//! TODO: Change
-	res.json({cookiesSet: {a_token: accessToken, r_token: refreshToken}});
-	return;
+
+	return {a_token: accessToken, r_token: refreshToken};
 }

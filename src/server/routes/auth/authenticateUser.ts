@@ -15,11 +15,11 @@ enum ACCESS_STATE {
 
 export async function authorizeUser(req: Request, res: Response, next: NextFunction) {
     
-    let accessStatus: ACCESS_STATE = ACCESS_STATE.INVALID_ACCESS_TOKEN;
     const refreshToken = req.cookies.r_token;
-
-    // check for valid tokens
+    let accessStatus: ACCESS_STATE = ACCESS_STATE.INVALID_ACCESS_TOKEN;
     let accessTokenDecoded;
+
+    // check for valid access token   
     try {
         accessTokenDecoded = decodeAccessToken(req.cookies.a_token);
         if(typeof accessTokenDecoded == "string") {
@@ -30,9 +30,15 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
         accessStatus = ACCESS_STATE.INVALID_ACCESS_TOKEN;
     }
 
+    /* 
+        Check if a valid refresh token exists to refresh the access.
+        A valid refresh token is a token that is not yet revoked and is still
+        within expiry
+    */
     if(accessStatus === ACCESS_STATE.INVALID_ACCESS_TOKEN) {
-        // check for validity of refresh token
+        
         let refreshTokenDecoded: Payload | string;
+        // check for validity of refresh token
         try {
             refreshTokenDecoded = decodeRefreshToken(req.cookies.r_token);        
             if(typeof refreshTokenDecoded === "string") {
@@ -45,6 +51,8 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
         }
 
         assert(accessStatus === ACCESS_STATE.VALID_REFRESH_TOKEN);
+        // ensure that the token wasn't revoked
+        // TODO: Test this
         const db_result = await getRefreshToken(refreshTokenDecoded.username);
         if(!db_result) {
             return res.status(400).json({status: "DB HAS NO REFRESH TOKEN"});
@@ -63,11 +71,10 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
         const newRefreshToken = signRefreshToken({username: refreshTokenDecoded.username});
         await setRefreshToken(refreshTokenDecoded.username, newRefreshToken);
         
-        // for any handlers in the current cycle
+        // for any handlers in the current request-response cycle
         req.cookies.a_token = newAccessToken; 
         // @ts-ignore
         req.username = refreshTokenDecoded.username;
-        // reset cookies for the browser
         res.cookie("a_token", newAccessToken);
         res.cookie("r_token", newRefreshToken);
     }

@@ -2,18 +2,17 @@ import { Collection } from "mongodb";
 import { User } from "../types/User";
 import { getMedicineCollection, getUsersCollection } from "./db";
 
-
-
 /**
  * Get the password for the user in question
  * @param username 
  * @param collection 
  * @returns 
  */
-export async function getPassword(username: string, collection: Collection<User>) {
+export async function getPassword(username: string) {
     if(!username) {
         return null;
     }
+    const collection = await getUsersCollection();
     const projection = { projection: { _id: 0, password: 1 } };
     return collection.findOne({ username: username }, projection);
 }
