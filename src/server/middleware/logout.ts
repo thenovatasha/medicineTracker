@@ -1,15 +1,15 @@
 import { Request, Response } from "express-serve-static-core";
-import { setRefreshToken } from "../../db/insert";
+import { setRefreshToken } from "../../db/update";
+import { StatusResponse } from "../../types/ResponseStatus";
 
 
-export async function logoutHandler(req: Request, res: Response) {
+export async function logoutHandler(req: Request, res: Response<StatusResponse>) {
 
-    //! TODO: switch to a request-attachment style username decoder 
     // clear cookies from browser
     const { username } = req.body;
     await logout(res, username);
     // TODO: Check if body is correct
-    return res.status(200).json({status: "logged out"});
+    return res.status(200).json({status: "success"});
 }
 
 /**
@@ -22,5 +22,5 @@ export async function logout(res: Response, username: string) {
     res.clearCookie("a_token");
     res.clearCookie("r_token");
     // invalidate refresh token
-    setRefreshToken(username, null);
+    await setRefreshToken(username, null);
 }

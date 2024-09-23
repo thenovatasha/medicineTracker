@@ -3,12 +3,15 @@ import { User } from "../types/User";
 import { UserHasMeds } from "../types/Medicine";
 
 
-const url: string = "mongodb://localhost:27017";
+const url = process.env.CONNECTION_STRING || "err";
 let client: MongoClient | null;
 const DB_NAME: string = process.env.DB_NAME || "err";
 
 // create a connection to the database if one doesn't already exist
 async function connectToDatabase() {
+    if(url === "err" || DB_NAME === "err") {
+        throw new ConfigError("database connection string missing");
+    }
     if (!client) {
     	client = new MongoClient(url);
 	}
@@ -25,7 +28,7 @@ export async function getDb(): Promise<Db> {
     }
     // check if client still doesn't exist
     if (!client) {
-        throw Error("DATABASE ERROR");
+        throw new DatabaseError("database could not connect");
     }
     return client.db(DB_NAME);
 }

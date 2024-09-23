@@ -13,14 +13,13 @@ import { userExists } from "./find";
 export async function createUser(user: User): Promise<boolean> {
 
     if (!env.SALT_ROUNDS) {
-        console.error("SALT ROUND WAS NOT FOUND");
-        return false;
+        throw new ConfigError("internal error");
     }
     const users = await getUsersCollection();
 
     // hash the password including the salt, and store it in the db
     if (await userExists(user.username, users)) {
-        throw Error("USER ALREADY EXISTS");
+        throw new InsertionError("user already exists");
     } else {
         // hash, and insert
         let hashedPassword = await bcrypt.hash(user.password, Number(env.SALT_ROUNDS));
@@ -58,7 +57,7 @@ export async function createMedicine(username: string, medicine: Medicine) {
         return collection.updateOne({username: username},
                                     {$push: {medicines: medicine}})
     } else {
-        throw new Error("medicine exists");
+        throw new InsertionError("medicine exists");
     }
 }
 
@@ -128,7 +127,7 @@ export async function setRefreshToken(username: string,
     const users = await getUsersCollection();
     // insert into the users table, where the refreshToken belongs
     if (!await userExists(username, users)) {
-        throw Error("TOKEN HANDLER: user doesn't exist after signup");
+        throw new InsertionError("unexpected error");
     } else {
         return users.updateOne({username: username},
                         {$set: {refreshToken: refreshToken}})

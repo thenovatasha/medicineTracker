@@ -1,19 +1,66 @@
 import { ErrorRequestHandler, Request, Response, NextFunction } from "express";
+import fs from 'fs';
+import path from 'path';
+import { StatusResponse } from "../../types/ResponseStatus";
 
-export function apiErrHandler(err: ErrorRequestHandler, req: Request, 
-                    res: Response, next: NextFunction) {
+export async function logError(err: Error) {
+    const logMessage = `[${new Date().toISOString()}] ${err.name}: ${err.message}\n${err.stack}\n\n`;
+
+    // Log to console
+    console.error(logMessage);
+    // and to file
+    const logFilePath = path.join(__dirname, 'error.log');
+    fs.appendFile(logFilePath, logMessage, (fileErr) => {
+        if (fileErr) {
+            console.error('Failed to write to log file:', fileErr);
+        }
+    });
+}
+export const apiErrHandler: ErrorRequestHandler = async (err: Error, req: Request, 
+                    res: Response<StatusResponse>, next: NextFunction) => {
+
     if(err) {
-        return res.status(400).json({status: JSON.stringify(err)});
+        await logError(err);
+        return res.status(500).json({status: "failure"});
     }
-    res.status(200).json({status: "end reached with no problems"});
+
+    return res.status(200).json({status: "success"});
 }
 
-export function onBoardErrHandler(err: ErrorRequestHandler, req: Request, 
-                    res: Response, next: NextFunction) {
+export const onBoardErrHandler: ErrorRequestHandler = async (err: Error, req: Request, 
+                    res: Response<StatusResponse>, next: NextFunction) => {
 
     if(err) {
-        return res.status(400).json({status: JSON.stringify(err)});
+        await logError(err);
+        return res.status(400).json({status: "failure"});
     }
-    res.status(200).json({status: "from onboard handler"});
+    return res.status(200).json({status: "success"});
+}
 
+/**
+ * Handle the different types of errors
+ * TODO: Yet to implement some of the response types
+ * @param err 
+ * @param req 
+ * @param res 
+ * @param next 
+ * @returns 
+ */
+export const globalErrorHandler: ErrorRequestHandler = async (err: Error, req: Request,
+                    res:Response<StatusResponse>, next: NextFunction) => {
+    // handle global error
+    if(err) {
+        await logError(err);
+        if(err instanceof DatabaseError) {
+            return res.status(500).json({status: "failure"});
+        }
+        if(err instanceof ConfigError) {
+            return res.status(503).json({status: "failure"});
+        }
+        if(err instanceof UnexpectedError) {
+            return res.status(500).json({status: "failure"});
+        }
+        return res.status(500).json({status: "failure"});
+    }
+    return res.status(200).json({status: "success"});
 }

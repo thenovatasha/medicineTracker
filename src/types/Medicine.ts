@@ -1,4 +1,4 @@
-export interface Medicine {
+export type Medicine = {
     name: string,
     width: number,
     height: number,
@@ -10,7 +10,7 @@ export interface Medicine {
 
 // db.meds.insertOne({user: Nova, meds: [{name: 'fexo', dosages: [2, 3, 2]}]});
 
-export interface UserHasMeds {
+export type UserHasMeds = {
     username: string;
     medicines: Medicine[];
 }

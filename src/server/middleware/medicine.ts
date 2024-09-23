@@ -1,19 +1,20 @@
 import {Request, Response} from "express";
-import { createMedicine, extraDose, forgotDose, updateMedicinesList } from "../../db/insert.js";
+import { createMedicine, extraDose, forgotDose, updateMedicinesList } from "../../db/update.js";
 import { Medicine } from "../../types/Medicine.js";
 import { getAllMeds } from "../../db/find.js";
+import { MedicineInfo, StatusResponse } from "../../types/ResponseStatus.js";
 
 /**
  * 
  * @param req 
  * @param res 
  */
-export async function newMedHandler(req: Request, res: Response) {
+export async function newMedHandler(req: Request, res: Response<StatusResponse>) {
     // @ts-ignore
     const {username} = req.body;
 
     const {name, width, height, startDate, startingDose, missed, dosages} = req.body;
-    //! remove and make into header or body of request
+    
     const medicine: Medicine = {
         name: name,
         width: width,
@@ -26,18 +27,18 @@ export async function newMedHandler(req: Request, res: Response) {
     try {
         await createMedicine(username, medicine);
     } catch (e) {
-        return res.status(200).json({status: "med existed"});
+        return res.status(400).json({status: "failure"});
     }
-    return res.status(200).json({status: "created med"});
+    return res.status(201).json({status: "success"});
 }
 
 
-export async function sendMedInfo(req: Request, res: Response) {
+export async function sendMedInfo(req: Request, res: Response<MedicineInfo>) {
     //@ts-ignore
     const {username} = req.body;
     const result = await getAllMeds(username);
     const medicineInfo = await result.toArray();
-    return res.status(203).json({status: medicineInfo[0].medicines});
+    return res.status(203).json({medicine: medicineInfo[0].medicines});
 }
 
 /**
@@ -46,23 +47,23 @@ export async function sendMedInfo(req: Request, res: Response) {
  * @param res 
  * @returns 
  */
-export async function deleteMedHandler(req: Request, res: Response) {
+export async function deleteMedHandler(req: Request, res: Response<StatusResponse>) {
     //@ts-ignore
     const {username} = req.body;
     const result = await getAllMeds(username);
     const allOfUserMeds = await result.toArray();
-    console.log("ERROR STARTING HERE");
-    console.log(allOfUserMeds);
-    const newMeds = allOfUserMeds[0].medicines.filter((medicineObject) => medicineObject.name !== req.query.name);
-
+    const newMeds = 
+        allOfUserMeds[0].medicines
+        .filter((medicineObject) => medicineObject.name !== req.query.name);
+    
     await updateMedicinesList(username, newMeds);
-    return res.status(200).json({status: "med deleted"});
+    return res.status(200).json({status: "success"});
 }
 
 /**
     Add a dose, remove a dose, or rename the med (extended functionality)
 */
-export async function updateMedHandler(req: Request, res: Response) {
+export async function updateMedHandler(req: Request, res: Response<StatusResponse>) {
 
     const {username, medicine, amount, type} = req.body;
     console.log(typeof amount);
@@ -77,5 +78,5 @@ export async function updateMedHandler(req: Request, res: Response) {
     // TODO: Later implementation
     // rename medicine
 
-    return res.status(200).json({status: "updated"});
+    return res.status(200).json({status: "success"});
 }

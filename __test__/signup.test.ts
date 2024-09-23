@@ -1,5 +1,5 @@
 import {Request, Response} from "express";
-import { createUser } from "../src/db/insert"
+import { createUser } from "../src/db/update"
 import { signupHandler } from "../src/server/middleware/signup";
 
 

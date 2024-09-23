@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { apiRouter } from "./routes/protectedRoute.js";
 import helmet from "helmet";
 import { onBoardRouter } from "./routes/onboardRoute.js";
+import { globalErrorHandler } from "./middleware/err.handlers.js";
 
 // Initialize server
 export const app: Express = express();
@@ -26,7 +27,7 @@ app.use(cookieParser());
 app.use("/api", apiRouter);
 app.use("/", onBoardRouter);
 
-// app.use(errHandler)
+app.use(globalErrorHandler);
 
 // activate the server
 app.listen(PORT);

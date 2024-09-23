@@ -10,7 +10,7 @@ import jwt from "jsonwebtoken";
 export function signRefreshToken(payload: Payload): string {
     const secret = process.env.JWT_REFRESH_KEY;
     if(!secret) {
-        throw new ConfigError("JWT_REFRESH_KEY missing");
+        throw new ConfigError("jwt r_secret key not found");
     }
     return jwt.sign(payload, secret, { expiresIn: "30d" });
 }
@@ -23,7 +23,7 @@ export function signRefreshToken(payload: Payload): string {
 export function signAccessToken(payload: Payload): string {
     const secret = process.env.JWT_ACCESS_KEY;
     if(!secret) {
-        throw new ConfigError("JWT_ACCESS_KEY missing");
+        throw new ConfigError("jwt a_secret key not found");
     }
     // TODO: SET BACK TO 5m
     return jwt.sign(payload, secret, { expiresIn: "30s" });
@@ -34,10 +34,10 @@ export function signAccessToken(payload: Payload): string {
  * @param refreshToken 
  * @returns Payload
  */
-export function decodeRefreshToken(refreshToken: string): Payload | string {
+export function decodeRefreshToken(refreshToken: string): Payload {
     const secret = process.env.JWT_REFRESH_KEY;
     if (!secret) {
-        return "";
+        throw new ConfigError("jwt r_secret key not found");
     }
     const verifiedToken = jwt.verify(refreshToken, secret);
     return verifiedToken as Payload;
@@ -48,14 +48,12 @@ export function decodeRefreshToken(refreshToken: string): Payload | string {
  * @param refreshToken 
  * @returns Payload
  */
-export function decodeAccessToken(accessToken: string): Payload | string {
+export function decodeAccessToken(accessToken: string): Payload {
     const secret = process.env.JWT_ACCESS_KEY;
     if (!secret) {
-        return "";
+        throw new ConfigError("jwt a_secret key not found");
     }
 
     const verifiedToken = jwt.verify(accessToken, secret);
     return verifiedToken as Payload;
 }
-
-

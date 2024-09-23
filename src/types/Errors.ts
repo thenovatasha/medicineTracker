@@ -5,3 +5,28 @@ class ConfigError extends Error {
         Object.setPrototypeOf(this, ConfigError.prototype);
     }
 }
+
+class UnexpectedError extends Error {
+    constructor(message: string = "unexpected error") {
+        super(message);
+        this.name = "UnexpectedError";
+        Object.setPrototypeOf(this, UnexpectedError.prototype);
+    }
+}
+
+class DatabaseError extends Error {
+    constructor(message: string = "Database error") {
+        super(message);
+        this.name = "Database Error";
+        Object.setPrototypeOf(this, DatabaseError.prototype);
+    }
+}
+
+class InsertionError extends DatabaseError {
+
+    constructor(message: string = "Insertion error") {
+        super(message);
+        this.name = "Insertion Error";
+        Object.setPrototypeOf(this, InsertionError.prototype);
+    }
+}

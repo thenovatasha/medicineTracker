@@ -9,9 +9,7 @@ import { getMedicineCollection, getUsersCollection } from "./db";
  * @returns 
  */
 export async function getPassword(username: string) {
-    if(!username) {
-        return null;
-    }
+
     const collection = await getUsersCollection();
     const projection = { projection: { _id: 0, password: 1 } };
     return collection.findOne({ username: username }, projection);
@@ -33,6 +31,11 @@ export async function userExists(username: string, collection?: Collection<User>
     }
 }
 
+/**
+ * Retrieve the refresh token, null if not present
+ * @param username 
+ * @returns 
+ */
 export async function getRefreshToken(username: string) {
     const collection = await getUsersCollection();
 

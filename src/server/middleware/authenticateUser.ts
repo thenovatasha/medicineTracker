@@ -1,9 +1,10 @@
 import {NextFunction, Request, Response } from "express";
-import { decodeAccessToken, decodeRefreshToken, signAccessToken, signRefreshToken } from "../util/tokens";
+import { decodeAccessToken, decodeRefreshToken } from "../util/tokens";
 import { getRefreshToken } from "../../db/find";
 import { Payload } from "../../types/Payload";
 import { assert } from "console";
-import { setRefreshToken } from "../../db/insert";
+import { Unauthorized } from "../../types/ResponseStatus";
+import { generateTokenPair } from "./login";
 
 
 enum ACCESS_STATE {
@@ -13,21 +14,26 @@ enum ACCESS_STATE {
     VALID_REFRESH_TOKEN
 }
 
-export async function authorizeUser(req: Request, res: Response, next: NextFunction) {
+export async function authorizeUser(req: Request, res: Response<Unauthorized>, next: NextFunction) {
     
     const refreshToken = req.cookies.r_token;
+    const responseUnauthorized: Unauthorized = {
+        err: "unauthorized"
+    } 
     let accessStatus: ACCESS_STATE = ACCESS_STATE.INVALID_ACCESS_TOKEN;
     let accessTokenDecoded;
 
     // check for valid access token   
     try {
         accessTokenDecoded = decodeAccessToken(req.cookies.a_token);
-        if(typeof accessTokenDecoded == "string") {
-            return res.status(500).json({detail: "Wrong expected return payload"});
-        }
         accessStatus = ACCESS_STATE.VALID_ACCESS_TOKEN;
     } catch(e) {
-        accessStatus = ACCESS_STATE.INVALID_ACCESS_TOKEN;
+        // if not a config error, 
+        if(e instanceof ConfigError) {
+            throw e;
+        } else {
+            accessStatus = ACCESS_STATE.INVALID_ACCESS_TOKEN;
+        }
     }
 
     /* 
@@ -37,51 +43,45 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
     */
     if(accessStatus === ACCESS_STATE.INVALID_ACCESS_TOKEN) {
         
-        let refreshTokenDecoded: Payload | string;
+        let refreshTokenDecoded: Payload;
         // check for validity of refresh token
         try {
             refreshTokenDecoded = decodeRefreshToken(req.cookies.r_token);        
-            if(typeof refreshTokenDecoded === "string") {
-                return res.status(500).json({detail: "Wrong expected return payload"});
-            }
             accessStatus = ACCESS_STATE.VALID_REFRESH_TOKEN;
         } catch (e) {
             accessStatus = ACCESS_STATE.INVALID_REFRESH_TOKEN;
-            return res.status(500).json({detail: "INVALID REFRESH TOKEN"});
+            return res.status(403).json(responseUnauthorized)
         }
-
         assert(accessStatus === ACCESS_STATE.VALID_REFRESH_TOKEN);
         // ensure that the token wasn't revoked
         // TODO: Test this
         const db_result = await getRefreshToken(refreshTokenDecoded.username);
         if(!db_result) {
-            return res.status(400).json({status: "DB HAS NO REFRESH TOKEN"});
+            return res.status(403).json(responseUnauthorized);
         }        
         const db_refresh_token = db_result.refreshToken;
         
         assert(db_refresh_token !== null);
         if(refreshToken !== db_refresh_token) {
-            return res.status(400).json(
-                {status: "THIS TOKEN WAS USED!! HACKERMAN DETECTED"});
+            return res.status(403).json(responseUnauthorized);
         }
 
         // since all is passed, refresh token was valid and never used before. 
         // create a new pair and send back
-        const newAccessToken = signAccessToken({username: refreshTokenDecoded.username});
-        const newRefreshToken = signRefreshToken({username: refreshTokenDecoded.username});
-        await setRefreshToken(refreshTokenDecoded.username, newRefreshToken);
+        const {a_token, r_token} = generateTokenPair(refreshTokenDecoded.username)
+
         
-        // for any handlers in the current request-response cycle
-        req.cookies.a_token = newAccessToken;
-        // @ts-ignore
+        req.cookies.a_token = a_token; // for any handlers in the current request-response cycle
         req.body.username = refreshTokenDecoded.username;
-        res.cookie("a_token", newAccessToken);
-        res.cookie("r_token", newRefreshToken);
+        res.cookie("a_token", a_token);
+        res.cookie("r_token", r_token);
     }
 
     // check if refresh token was previously used
     if(accessStatus === ACCESS_STATE.VALID_ACCESS_TOKEN) {
-        // @ts-ignore
+        if(!accessTokenDecoded) {
+            throw new UnexpectedError("access token returned no payload, but access token was valid")
+        }
         req.body.username = accessTokenDecoded.username;
     }
     next();
