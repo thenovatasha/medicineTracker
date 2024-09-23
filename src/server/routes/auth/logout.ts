@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { setRefreshToken } from "../../db/auth/tokenHandler.js";
-import { decodeAccessToken } from "../util/tokens.js";
+import { setRefreshToken } from "../../../db/auth/tokenHandler.js";
+import { decodeAccessToken } from "../../util/tokens.js";
 
 
 export async function logoutHandler(req: Request, res: Response) {

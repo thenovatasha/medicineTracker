@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import { getDb, getMedicineCollection } from "./db";
+import { getMedicineCollection, getUsersCollection } from "./db";
 import { env } from "process";
-import { Medicine, UserHasMeds } from "../types/Medicine";
+import { Medicine  } from "../types/Medicine";
 import { User } from "../types/User";
 import { userExists } from "./find";
 
@@ -16,9 +16,7 @@ export async function createUser(user: User): Promise<boolean> {
         console.error("SALT ROUND WAS NOT FOUND");
         return false;
     }
-    // load in the db
-    const db = await getDb();
-    const users = db.collection<User>("user");
+    const users = await getUsersCollection();
 
     // hash the password including the salt, and store it in the db
     if (await userExists(user.username, users)) {
@@ -44,8 +42,7 @@ export async function createUser(user: User): Promise<boolean> {
  */
 export async function createMedicine(username: string, medicine: Medicine) {
 
-    const db = await getDb();
-    const collection = db.collection<UserHasMeds>("medicine");
+    const collection = await getMedicineCollection();
     const result = await collection.findOne({username: username}, 
                                             {projection: {medicines: 1}});
 
@@ -65,13 +62,19 @@ export async function createMedicine(username: string, medicine: Medicine) {
     }
 }
 
+
+/**
+ * Remove a dose from the medicine for the user
+ * @param username 
+ * @param medicineName 
+ * @param dose 
+ * @returns 
+ */
 export async function forgotDose(username: string, medicineName: string,
                                  dose: number) 
 {
-    // db calls
-    const db = await getDb();
-    const collection = db.collection<UserHasMeds>("medicine");
-    
+
+    const collection = await getMedicineCollection();   
     // filter and update
     const filter = {username: username, "meds.name": medicineName};
     const updateDocument = {
@@ -82,12 +85,17 @@ export async function forgotDose(username: string, medicineName: string,
     return collection.updateOne(filter, updateDocument);
 }
 
+/**
+ * Add a dose to the particular medicine for that user
+ * @param username 
+ * @param medicineName 
+ * @param dose 
+ * @returns 
+ */
 export async function extraDose(username: string, medicineName: string, 
                                 dose: number)
 {
-    // db calls
-    const db = await getDb();
-    const collection = db.collection<UserHasMeds>("medicine");
+    const collection = await getMedicineCollection();
 
     // filter and update
     const filter = {username: username, "meds.name": medicineName};
@@ -99,6 +107,13 @@ export async function extraDose(username: string, medicineName: string,
     return collection.updateOne(filter, updateDocument);
 }
 
+
+/**
+ * Set the medicine list to the medicine collection for the user
+ * @param username 
+ * @param medicineList 
+ * @returns 
+ */
 export async function updateMedicinesList(username: string, medicineList: Medicine[]) {
     
     const collection = await getMedicineCollection();

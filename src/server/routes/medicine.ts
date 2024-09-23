@@ -44,6 +44,7 @@ export async function sendMedInfo(req: Request, res: Response) {
     return res.status(203).json({finally: final[0].medicines});
 }
 
+
 export async function deleteMedHandler(req: Request, res: Response) {
     //@ts-ignore
     const username = req.username;
@@ -56,4 +57,12 @@ export async function deleteMedHandler(req: Request, res: Response) {
 
     await updateMedicinesList(username, newMeds);
     return res.status(200).json({status: "med deleted"});
+}
+
+/**
+    Add a dose, remove a dose, or rename the med
+*/
+export async function updateMedHandler(req: Request, res: Response) {
+
+
 }

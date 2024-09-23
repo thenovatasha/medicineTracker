@@ -9,7 +9,6 @@ export default async function getUserMedMiddleware(
 ) {
 	const token = req.body.token; // Assuming the token is sent in the body as
 
-	console.log(token);
 	jwt.verify(token, "secret", (err: VerifyErrors | null,
 			   decoded: string | JwtPayload | undefined) => 
 	{
@@ -21,7 +20,6 @@ export default async function getUserMedMiddleware(
 			const decodedToken = decoded as Payload;
 			req.body.user = decodedToken.username;
 		}
-		console.log("Proceeding from get user middleware");
 		next();
 	});	
 }

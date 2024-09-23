@@ -1,6 +1,8 @@
 import { Db, MongoClient, Collection } from "mongodb";
 import { User } from "../types/User";
 import { UserHasMeds } from "../types/Medicine";
+
+
 // the password functionality
 const url: string = "mongodb://localhost:27017";
 let client: MongoClient | null;
@@ -29,12 +31,20 @@ export async function getDb(): Promise<Db> {
     return client.db(DB_NAME);
 }
 
+/**
+ * Abstracted calls to get the medicine collection
+ * @returns 
+ */
 export async function getUsersCollection(): Promise<Collection<User>> {
     
     const db = await getDb();
     return db.collection<User>("user")
 }
 
+/**
+ * Abstracted calls to get the medicine collection
+ * @returns 
+ */
 export async function getMedicineCollection(): Promise<Collection<UserHasMeds>> {
     
     const db = await getDb();
