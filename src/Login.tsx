@@ -26,9 +26,7 @@ function Login() {
         credentials: 'include', // Allows cookies to be included
       });
 
-      const data = await response.json();
-
-      if (data.cookiesSet) {
+      if (response.status === 200) {
         setSuccess('Login successful');
         setError('');
       } else {

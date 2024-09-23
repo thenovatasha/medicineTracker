@@ -1,17 +1,13 @@
-import { Request, Response } from "express";
+import { Request, Response } from "express-serve-static-core";
 import { setRefreshToken } from "../../../db/auth/tokenHandler.js";
-import { decodeAccessToken } from "../../util/tokens.js";
 
 
 export async function logoutHandler(req: Request, res: Response) {
 
     //! TODO: switch to a request-attachment style username decoder 
     // clear cookies from browser
-    const result = decodeAccessToken(req.cookies.a_token);
-    if(typeof result == 'string') {
-        return;
-    }
-    await logout(res, result.username);
+    const { username } = req.body;
+    await logout(res, username);
     // TODO: Check if body is correct
     return res.status(200).json({status: "logged out"});
 }

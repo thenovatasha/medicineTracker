@@ -32,7 +32,8 @@ export default async function  loginMiddleware(req: Request, res: Response) {
 	res.cookie("a_token", a_token, {httpOnly: true, secure: false});
 	res.cookie("r_token", r_token, {httpOnly: true, secure: false});
 	// TODO: Change
-	res.json({status: "cookies set"});
+	
+	res.status(200).json({status: "cookies set"});
 	return;
 }
 

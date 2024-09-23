@@ -76,10 +76,10 @@ export async function forgotDose(username: string, medicineName: string,
 
     const collection = await getMedicineCollection();   
     // filter and update
-    const filter = {username: username, "meds.name": medicineName};
+    const filter = {username: username, "medicines.name": medicineName};
     const updateDocument = {
         $inc: {
-            "meds.$.missed": -dose
+            "medicines.$.missed": -dose
         }
     }
     return collection.updateOne(filter, updateDocument);
@@ -98,10 +98,10 @@ export async function extraDose(username: string, medicineName: string,
     const collection = await getMedicineCollection();
 
     // filter and update
-    const filter = {username: username, "meds.name": medicineName};
+    const filter = {username: username, "medicines.name": medicineName};
     const updateDocument = {
         $inc: {
-            "meds.$.missed": dose
+            "medicines.$.missed": dose
         }
     }
     return collection.updateOne(filter, updateDocument);

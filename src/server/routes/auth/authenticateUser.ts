@@ -72,9 +72,9 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
         await setRefreshToken(refreshTokenDecoded.username, newRefreshToken);
         
         // for any handlers in the current request-response cycle
-        req.cookies.a_token = newAccessToken; 
+        req.cookies.a_token = newAccessToken;
         // @ts-ignore
-        req.username = refreshTokenDecoded.username;
+        req.body.username = refreshTokenDecoded.username;
         res.cookie("a_token", newAccessToken);
         res.cookie("r_token", newRefreshToken);
     }
@@ -82,7 +82,7 @@ export async function authorizeUser(req: Request, res: Response, next: NextFunct
     // check if refresh token was previously used
     if(accessStatus === ACCESS_STATE.VALID_ACCESS_TOKEN) {
         // @ts-ignore
-        req.username = accessTokenDecoded.username;
+        req.body.username = accessTokenDecoded.username;
     }
     next();
 }

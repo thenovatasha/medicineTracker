@@ -20,3 +20,4 @@ If you see that there is a discrepancy (maybe you forgot a couple of days), you 
 - [ ] Add request sanitisation
 - [ ] DB tests
 - [ ] handler tests
+- [ ] sophisticated error handling

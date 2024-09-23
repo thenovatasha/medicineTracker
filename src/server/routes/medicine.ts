@@ -10,18 +10,16 @@ import { getAllMeds } from "../../db/find.js";
  */
 export async function newMedHandler(req: Request, res: Response) {
     // @ts-ignore
-    const username = req.username;
-    if(!username) {
-        return res.status(500).json({status: "username does not exist on req body"})
-    }
-    const {medicineName, packetWidth, packetHeight, startDate, startDose, missed, dosages} = req.body;
+    const {username} = req.body;
+
+    const {name, width, height, startDate, startingDose, missed, dosages} = req.body;
     //! remove and make into header or body of request
     const medicine: Medicine = {
-        name: medicineName,
-        width: packetHeight,
-        height: packetWidth,
+        name: name,
+        width: width,
+        height: height,
         startDate: startDate,
-        startingDose: startDose,
+        startingDose: startingDose,
         missed: missed,
         dosages: dosages
     }
@@ -36,10 +34,7 @@ export async function newMedHandler(req: Request, res: Response) {
 
 export async function sendMedInfo(req: Request, res: Response) {
     //@ts-ignore
-    const username = req.username;
-    if(!username) {
-        return res.status(500).json({status: "username does not exist on req body"})
-    }
+    const {username} = req.body;
     const result = await getAllMeds(username);
     const medicineInfo = await result.toArray();
     return res.status(203).json({status: medicineInfo[0].medicines});
@@ -53,12 +48,11 @@ export async function sendMedInfo(req: Request, res: Response) {
  */
 export async function deleteMedHandler(req: Request, res: Response) {
     //@ts-ignore
-    const username = req.username;
-    if(!username) {
-        return res.status(500).json({status: "username does not exist on req body"})
-    }
+    const {username} = req.body;
     const result = await getAllMeds(username);
     const allOfUserMeds = await result.toArray();
+    console.log("ERROR STARTING HERE");
+    console.log(allOfUserMeds);
     const newMeds = allOfUserMeds[0].medicines.filter((medicineObject) => medicineObject.name !== req.query.name);
 
     await updateMedicinesList(username, newMeds);
@@ -70,15 +64,15 @@ export async function deleteMedHandler(req: Request, res: Response) {
 */
 export async function updateMedHandler(req: Request, res: Response) {
 
-    const {username, medicineName, amount, type} = req.body;
-    
+    const {username, medicine, amount, type} = req.body;
+    console.log(typeof amount);
     if(type === "forgot") {
         // removes a dose to a med
-        await forgotDose(username, medicineName, amount);
+        await forgotDose(username, medicine, amount);
     
     } else if (type === "extra") {
         // adds a dose to a med
-        await extraDose(username, medicineName, amount);
+        await extraDose(username, medicine, amount);
     }
     // TODO: Later implementation
     // rename medicine
