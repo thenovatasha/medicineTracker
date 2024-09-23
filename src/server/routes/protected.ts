@@ -1,7 +1,7 @@
 import * as express from "express";
 import { authorizeUser } from "./auth/authenticateUser.js";
 import { logoutHandler } from "./auth/logout.js";
-import { sendMedInfo, newMedHandler, deleteMedHandler } from "./medicine.js";
+import { sendMedInfo, newMedHandler, deleteMedHandler, updateMedHandler } from "./medicine.js";
 export const router = express.Router();
 
 router.use(authorizeUser);
