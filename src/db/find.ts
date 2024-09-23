@@ -37,8 +37,7 @@ export async function getRefreshToken(username: string) {
     const collection = await getUsersCollection();
 
     const projection = {projection: { _id: 0, refreshToken: 1}};
-    return await collection.findOne({username: username}, projection);
-
+    return collection.findOne({username: username}, projection);
 }
 
 

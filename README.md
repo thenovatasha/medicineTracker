@@ -13,7 +13,10 @@ If you see that there is a discrepancy (maybe you forgot a couple of days), you 
 ### Project todo
 
 - [X] Connect app to db
-- [ ] User Authentication + Authorization
-- [ ] Create a db schema
-- [ ] UI Scaffold with mock data
-- [ ]
+- [X] User Authentication + Authorization
+- [X] Create a db schema
+- [X] UI Scaffold with mock data
+- [X] Routes, and endpoints set
+- [ ] Add request sanitisation
+- [ ] DB tests
+- [ ] handler tests

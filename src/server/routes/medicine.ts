@@ -19,7 +19,7 @@ export async function newMedHandler(req: Request, res: Response) {
     const medicine: Medicine = {
         name: medicineName,
         width: packetHeight,
-        height: packetHeight,
+        height: packetWidth,
         startDate: startDate,
         startingDose: startDose,
         missed: missed,
@@ -35,7 +35,6 @@ export async function newMedHandler(req: Request, res: Response) {
 
 
 export async function sendMedInfo(req: Request, res: Response) {
-    console.log("HERE");
     //@ts-ignore
     const username = req.username;
     if(!username) {
@@ -71,12 +70,18 @@ export async function deleteMedHandler(req: Request, res: Response) {
 */
 export async function updateMedHandler(req: Request, res: Response) {
 
-    const {username, medicineName, amount } = req.body;
-    // adds a dose to a med
-    extraDose(username, medicineName, amount);
-    // removes a dose to a med
-    forgotDose(username, medicineName, amount);
+    const {username, medicineName, amount, type} = req.body;
     
+    if(type === "forgot") {
+        // removes a dose to a med
+        await forgotDose(username, medicineName, amount);
+    
+    } else if (type === "extra") {
+        // adds a dose to a med
+        await extraDose(username, medicineName, amount);
+    }
     // TODO: Later implementation
     // rename medicine
+
+    return res.status(200).json({status: "updated"});
 }

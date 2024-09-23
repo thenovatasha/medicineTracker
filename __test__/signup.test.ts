@@ -1,8 +1,7 @@
 import {Request, Response} from "express";
 import { createUser } from "../src/db/insert"
 import { signupHandler } from "../src/server/routes/signup";
-import { signRefreshToken } from "../src/server/util/tokens";
-import { StatusResponse } from "../src/types/ResponseStatus";
+
 
 // Mock the dependencies
 jest.mock("../src/db/insert");
@@ -36,7 +35,6 @@ describe("signupHandler", () => {
 
     it("should create a user successfully", async () => {
         (createUser as jest.Mock).mockResolvedValueOnce({});
-        (signRefreshToken as jest.Mock).mockReturnValueOnce("mockRefreshToken");
 
         await signupHandler(req as Request, res as Response);
 
@@ -44,10 +42,8 @@ describe("signupHandler", () => {
             username: "testuser",
             password: "testpassword",
             dateJoined: expect.any(Number),
-            refreshToken: "mockRefreshToken",
+            refreshToken: null,
         });
-
-        expect(signRefreshToken).toHaveBeenCalledWith({ username: "testuser" });
 
         expect(statusMock).toHaveBeenCalledWith(200);
         expect(jsonMock).toHaveBeenCalledWith({ creationStatus: "success" });
@@ -56,14 +52,13 @@ describe("signupHandler", () => {
     it("should handle errors during user creation", async () => {
         const error = new Error("Database error");
         (createUser as jest.Mock).mockRejectedValueOnce(error);
-        (signRefreshToken as jest.Mock).mockReturnValueOnce("mockRefreshToken");
         await signupHandler(req as Request, res as Response);
 
         expect(createUser).toHaveBeenCalledWith({
             username: "testuser",
             password: "testpassword",
             dateJoined: expect.any(Number),
-            refreshToken: expect.any(String),
+            refreshToken: null,
         });
 
         expect(statusMock).toHaveBeenCalledWith(500);
