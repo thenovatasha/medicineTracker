@@ -1,7 +1,7 @@
 
-import { getDb } from "../db";
-import { User } from "../../types/User";
-import { userExists } from "../find";
+import { getDb } from "./db";
+import { User } from "../types/User";
+import { userExists } from "./find";
 
 
 export async function setRefreshToken(username: string,

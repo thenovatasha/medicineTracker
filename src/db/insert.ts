@@ -85,6 +85,7 @@ export async function forgotDose(username: string, medicineName: string,
     return collection.updateOne(filter, updateDocument);
 }
 
+
 /**
  * Add a dose to the particular medicine for that user
  * @param username 
@@ -119,4 +120,17 @@ export async function updateMedicinesList(username: string, medicineList: Medici
     const collection = await getMedicineCollection();
     return collection.updateOne({username: username},
                                     {$set: {medicines: medicineList}})
+}
+
+export async function setRefreshToken(username: string,
+                                      refreshToken: string | null) {
+
+    const users = await getUsersCollection();
+    // insert into the users table, where the refreshToken belongs
+    if (!await userExists(username, users)) {
+        throw Error("TOKEN HANDLER: user doesn't exist after signup");
+    } else {
+        return users.updateOne({username: username},
+                        {$set: {refreshToken: refreshToken}})
+    }
 }

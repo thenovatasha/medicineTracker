@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { getPassword, userExists } from "../../../db/find.js";
+import { getPassword, userExists } from "../../db/find.js";
 import bcrypt from "bcrypt";
-import { signAccessToken, signRefreshToken } from "../../util/tokens.js";
-import { setRefreshToken } from "../../../db/auth/tokenHandler.js";
+import { signAccessToken, signRefreshToken } from "../util/tokens.js";
+import { setRefreshToken } from "../../db/insert";
 import { assert } from "console";
-import { TokenPair } from "../../../types/Payload.js";
+import { TokenPair } from "../../types/Payload.js";
  
 export default async function  loginMiddleware(req: Request, res: Response) {
 	

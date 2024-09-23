@@ -1,8 +1,8 @@
-import { signupHandler } from "./signup";
+import { signupHandler } from "../middleware/signup";
 import { Router } from "express";
-import loginMiddleware from "./auth/login";
-import { bodyChecker } from "./validationHandlers";
-import { onBoardErrHandler } from "../middleware/error/err.handlers";
+import loginMiddleware from "../middleware/login";
+import { bodyChecker } from "../util/validations";
+import { onBoardErrHandler } from "../middleware/err.handlers";
 export const onBoardRouter = Router();
 
 onBoardRouter.use(bodyChecker("onBoardHandler")); // validations

@@ -1,9 +1,9 @@
 import * as express from "express";
-import { authorizeUser } from "./auth/authenticateUser";
-import { logoutHandler } from "./auth/logout";
-import { sendMedInfo, newMedHandler, deleteMedHandler, updateMedHandler } from "./medicine";
-import { cookieChecker, queryChecker, bodyChecker } from "./validationHandlers";
-import { apiErrHandler } from "../middleware/error/err.handlers";
+import { authorizeUser } from "../middleware/authenticateUser";
+import { logoutHandler } from "../middleware/logout";
+import { sendMedInfo, newMedHandler, deleteMedHandler, updateMedHandler } from "../middleware/medicine";
+import { cookieChecker, queryChecker, bodyChecker } from "../util/validations";
+import { apiErrHandler } from "../middleware/err.handlers";
 export const apiRouter = express.Router();
 
 apiRouter.use(cookieChecker()); // ensure both cookies are set

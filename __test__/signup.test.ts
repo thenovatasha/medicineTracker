@@ -1,6 +1,6 @@
 import {Request, Response} from "express";
 import { createUser } from "../src/db/insert"
-import { signupHandler } from "../src/server/routes/signup";
+import { signupHandler } from "../src/server/middleware/signup";
 
 
 // Mock the dependencies

@@ -1,5 +1,5 @@
 import { Request, Response } from "express-serve-static-core";
-import { setRefreshToken } from "../../../db/auth/tokenHandler.js";
+import { setRefreshToken } from "../../db/insert";
 
 
 export async function logoutHandler(req: Request, res: Response) {

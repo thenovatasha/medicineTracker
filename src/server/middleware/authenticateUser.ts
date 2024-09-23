@@ -1,9 +1,9 @@
 import {NextFunction, Request, Response } from "express";
-import { decodeAccessToken, decodeRefreshToken, signAccessToken, signRefreshToken } from "../../util/tokens";
-import { getRefreshToken } from "../../../db/find";
-import { Payload } from "../../../types/Payload";
+import { decodeAccessToken, decodeRefreshToken, signAccessToken, signRefreshToken } from "../util/tokens";
+import { getRefreshToken } from "../../db/find";
+import { Payload } from "../../types/Payload";
 import { assert } from "console";
-import { setRefreshToken } from "../../../db/auth/tokenHandler";
+import { setRefreshToken } from "../../db/insert";
 
 
 enum ACCESS_STATE {
