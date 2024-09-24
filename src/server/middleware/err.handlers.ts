@@ -2,14 +2,16 @@ import { ErrorRequestHandler, Request, Response, NextFunction } from "express";
 import fs from 'fs';
 import path from 'path';
 import { StatusResponse } from "../../types/ResponseStatus";
-
+import { DatabaseError } from "../../types/Errors";
+import { ConfigError } from "../../types/Errors";
+import { UnexpectedError } from "../../types/Errors";
 export async function logError(err: Error) {
     const logMessage = `[${new Date().toISOString()}] ${err.name}: ${err.message}\n${err.stack}\n\n`;
 
     // Log to console
     console.error(logMessage);
     // and to file
-    const logFilePath = path.join(__dirname, 'error.log');
+    const logFilePath = path.join(import.meta.dirname, 'error.log');
     fs.appendFile(logFilePath, logMessage, (fileErr) => {
         if (fileErr) {
             console.error('Failed to write to log file:', fileErr);
@@ -30,6 +32,7 @@ export const apiErrHandler: ErrorRequestHandler = async (err: Error, req: Reques
 export const onBoardErrHandler: ErrorRequestHandler = async (err: Error, req: Request, 
                     res: Response<StatusResponse>, next: NextFunction) => {
 
+    console.log("onBoardErrorHandler saying hi");
     if(err) {
         await logError(err);
         return res.status(400).json({status: "failure"});

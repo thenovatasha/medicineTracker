@@ -1,4 +1,4 @@
-class ConfigError extends Error {
+export class ConfigError extends Error {
     constructor(message: string = "Missing Config Property") {
         super(message);
         this.name = "ConfigError";
@@ -6,7 +6,7 @@ class ConfigError extends Error {
     }
 }
 
-class UnexpectedError extends Error {
+export class UnexpectedError extends Error {
     constructor(message: string = "unexpected error") {
         super(message);
         this.name = "UnexpectedError";
@@ -14,7 +14,7 @@ class UnexpectedError extends Error {
     }
 }
 
-class DatabaseError extends Error {
+export class DatabaseError extends Error {
     constructor(message: string = "Database error") {
         super(message);
         this.name = "Database Error";
@@ -22,7 +22,7 @@ class DatabaseError extends Error {
     }
 }
 
-class InsertionError extends DatabaseError {
+export class InsertionError extends DatabaseError {
 
     constructor(message: string = "Insertion error") {
         super(message);

@@ -1,15 +1,16 @@
-import {Request, Response} from "express";
+import {NextFunction, Request, Response} from "express";
 import { createMedicine, extraDose, forgotDose, updateMedicinesList } from "../../db/update.js";
 import { Medicine } from "../../types/Medicine.js";
 import { getAllMeds } from "../../db/find.js";
 import { MedicineInfo, StatusResponse } from "../../types/ResponseStatus.js";
+import { nextTick } from "process";
 
 /**
  * 
  * @param req 
  * @param res 
  */
-export async function newMedHandler(req: Request, res: Response<StatusResponse>) {
+export async function newMedHandler(req: Request, res: Response<StatusResponse>, next: NextFunction) {
     // @ts-ignore
     const {username} = req.body;
 
@@ -27,7 +28,7 @@ export async function newMedHandler(req: Request, res: Response<StatusResponse>)
     try {
         await createMedicine(username, medicine);
     } catch (e) {
-        return res.status(400).json({status: "failure"});
+        next(e)
     }
     return res.status(201).json({status: "success"});
 }
@@ -38,7 +39,8 @@ export async function sendMedInfo(req: Request, res: Response<MedicineInfo>) {
     const {username} = req.body;
     const result = await getAllMeds(username);
     const medicineInfo = await result.toArray();
-    return res.status(203).json({medicine: medicineInfo[0].medicines});
+
+    return res.status(203).json({medicine: medicineInfo[0] ? medicineInfo[0].medicines : []});
 }
 
 /**
@@ -47,17 +49,22 @@ export async function sendMedInfo(req: Request, res: Response<MedicineInfo>) {
  * @param res 
  * @returns 
  */
-export async function deleteMedHandler(req: Request, res: Response<StatusResponse>) {
+export async function deleteMedHandler(req: Request, res: Response<StatusResponse>, next: NextFunction) {
     //@ts-ignore
-    const {username} = req.body;
-    const result = await getAllMeds(username);
-    const allOfUserMeds = await result.toArray();
-    const newMeds = 
-        allOfUserMeds[0].medicines
-        .filter((medicineObject) => medicineObject.name !== req.query.name);
+    try {
+        const {username} = req.body;
+        const result = await getAllMeds(username);
+        const allOfUserMeds = await result.toArray();
+        const newMeds = 
+            allOfUserMeds[0].medicines
+            .filter((medicineObject) => medicineObject.name !== req.query.name);
+
+        await updateMedicinesList(username, newMeds);
+        return res.status(200).json({status: "success"});
+    } catch (e) {
+        next(e);
+    }
     
-    await updateMedicinesList(username, newMeds);
-    return res.status(200).json({status: "success"});
 }
 
 /**

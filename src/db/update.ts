@@ -4,7 +4,8 @@ import { env } from "process";
 import { Medicine  } from "../types/Medicine";
 import { User } from "../types/User";
 import { userExists } from "./find";
-
+import { ConfigError } from "../types/Errors";
+import { InsertionError } from "../types/Errors"; 
 /**
     Creates a user in the database, throws an Error if user already exists.
     Returns true if creation successful,

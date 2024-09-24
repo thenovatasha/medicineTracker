@@ -17,7 +17,9 @@ If you see that there is a discrepancy (maybe you forgot a couple of days), you 
 - [X] Create a db schema
 - [X] UI Scaffold with mock data
 - [X] Routes, and endpoints set
-- [ ] Add request sanitisation
+- [X] Add request sanitisation
 - [ ] DB tests
 - [ ] handler tests
-- [ ] sophisticated error handling
+- [X] sophisticated error handling
+- [ ] Add cookie expiration
+- [ ] Configure config files for testing / deployment / development

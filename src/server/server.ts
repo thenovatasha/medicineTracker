@@ -30,5 +30,7 @@ app.use("/", onBoardRouter);
 app.use(globalErrorHandler);
 
 // activate the server
-app.listen(PORT);
-console.log(`server started at http://localhost:${PORT}`);
+app.listen(3001, "0.0.0.0", () => {
+    console.log("SERVER STARTED");
+})
+// console.log(`server started at http://localhost:${PORT}`);

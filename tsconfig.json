@@ -9,7 +9,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "module": "ES6", // Use 'esnext' for ES module support
+    "module": "ES2022", // Use 'esnext' for ES module support
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,

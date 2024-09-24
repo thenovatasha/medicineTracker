@@ -7,6 +7,7 @@ export const onBoardRouter = Router();
 
 onBoardRouter.use(bodyChecker("onBoardHandler")); // validations
 
+
 onBoardRouter.post("/signup", signupHandler);
 onBoardRouter.post("/login", loginMiddleware);
 

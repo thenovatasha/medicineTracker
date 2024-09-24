@@ -1,0 +1,81 @@
+[2024-09-24T16:10:47.987Z] undefined: undefined
+undefined
+
+[2024-09-24T16:12:57.262Z] undefined: undefined
+undefined
+
+[2024-09-24T16:13:06.907Z] undefined: undefined
+undefined
+
+[2024-09-24T17:13:44.644Z] undefined: undefined
+undefined
+
+[2024-09-24T17:19:38.367Z] undefined: undefined
+undefined
+
+[2024-09-24T17:23:04.256Z] undefined: undefined
+undefined
+
+[2024-09-24T17:27:10.500Z] undefined: undefined
+undefined
+
+[2024-09-24T17:29:57.079Z] undefined: undefined
+undefined
+
+[2024-09-24T17:30:17.881Z] undefined: undefined
+undefined
+
+[2024-09-24T17:30:25.066Z] undefined: undefined
+undefined
+
+[2024-09-24T17:30:56.293Z] undefined: undefined
+undefined
+
+[2024-09-24T17:45:11.014Z] undefined: undefined
+undefined
+
+[2024-09-24T17:45:13.290Z] undefined: undefined
+undefined
+
+[2024-09-24T17:45:13.724Z] undefined: undefined
+undefined
+
+[2024-09-24T17:45:14.060Z] undefined: undefined
+undefined
+
+[2024-09-24T17:45:17.135Z] undefined: undefined
+undefined
+
+[2024-09-24T17:45:17.313Z] undefined: undefined
+undefined
+
+[2024-09-24T17:45:17.495Z] undefined: undefined
+undefined
+
+[2024-09-24T17:45:17.682Z] undefined: undefined
+undefined
+
+[2024-09-24T17:45:17.836Z] undefined: undefined
+undefined
+
+[2024-09-24T17:45:18.014Z] undefined: undefined
+undefined
+
+[2024-09-24T17:54:41.272Z] undefined: undefined
+undefined
+
+[2024-09-24T17:55:31.714Z] undefined: undefined
+undefined
+
+[2024-09-24T18:04:56.025Z] undefined: undefined
+undefined
+
+[2024-09-24T18:08:05.391Z] undefined: undefined
+undefined
+
+[2024-09-24T18:49:12.759Z] Insertion Error: user already exists
+Insertion Error: user already exists
+    at createUser (/home/thenovatasha/medicineTracker/src/db/update.ts:23:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at signupHandler (/home/thenovatasha/medicineTracker/src/server/middleware/signup.ts:14:3)
+

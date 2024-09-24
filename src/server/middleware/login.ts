@@ -1,27 +1,37 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { getPassword, userExists } from "../../db/find.js";
 import bcrypt from "bcrypt";
 import { signAccessToken, signRefreshToken } from "../util/tokens.js";
 import { setRefreshToken } from "../../db/update.js";
 import { TokenPair } from "../../types/Payload.js";
 import { StatusResponse } from "../../types/ResponseStatus.js";
- 
-export default async function loginMiddleware(req: Request, res: Response<StatusResponse>) {
-	
+import { UnexpectedError } from "../../types/Errors.js";
+import { nextTick } from "process";
+export default async function loginMiddleware(req: Request, res: Response<StatusResponse>, next: NextFunction) {
+	// return res.send({status: "success"});
 	const { username, password } = req.body;
-
+	console.log("inside loginMdw");
+	console.log(username, password);
 	// check if the user exists
 	const isCorrectUser = await userExists(username);
 	if(!isCorrectUser) {
 		return res.status(401).json({status: "failure"});
 	}
-	const isPasswordValid = await matchPassword(username, password);
+	let isPasswordValid;
+	console.log("user is correct");
+	try {
+		 isPasswordValid = await matchPassword(username, password);
+	} catch (e) {
+		next(e);
+	}
 	
 	if(!isPasswordValid) {
+		console.log("invalid Password");
 		return res.status(401).json({status: "failure"});	 
 	}	
 	const {a_token, r_token} = generateTokenPair(username);
 
+	console.log("setting cookies");
 	// TODO: change back to secure: true in production
 	res.cookie("a_token", a_token, {httpOnly: true, secure: false});
 	res.cookie("r_token", r_token, {httpOnly: true, secure: false});
@@ -38,8 +48,9 @@ async function matchPassword(username: string, password: string) {
 	if(!truePasswordResult.password) {
 		return Promise.resolve(false);
 	}
+	console.log("all the way here");
 	// validate password
-	return await bcrypt.compare(password, truePasswordResult.password);
+	return bcrypt.compare(password, truePasswordResult.password);
 }
 
 /**

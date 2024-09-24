@@ -5,8 +5,7 @@ import { Payload } from "../../types/Payload";
 import { assert } from "console";
 import { Unauthorized } from "../../types/ResponseStatus";
 import { generateTokenPair } from "./login";
-
-
+import { ConfigError, UnexpectedError } from "../../types/Errors";
 enum ACCESS_STATE {
     INVALID_ACCESS_TOKEN,
     VALID_ACCESS_TOKEN,
@@ -15,7 +14,7 @@ enum ACCESS_STATE {
 }
 
 export async function authorizeUser(req: Request, res: Response<Unauthorized>, next: NextFunction) {
-    
+    console.log("inside authorize user");
     const refreshToken = req.cookies.r_token;
     const responseUnauthorized: Unauthorized = {
         err: "unauthorized"

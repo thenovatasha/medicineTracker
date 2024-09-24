@@ -1,7 +1,8 @@
 import { Db, MongoClient, Collection } from "mongodb";
 import { User } from "../types/User";
 import { UserHasMeds } from "../types/Medicine";
-
+import { DatabaseError } from "../types/Errors";
+import { ConfigError } from "../types/Errors";
 
 const url = process.env.CONNECTION_STRING || "err";
 let client: MongoClient | null;
